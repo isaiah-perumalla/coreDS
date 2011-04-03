@@ -14,16 +14,17 @@ void test_bottom_up_merge_sort()
 
 void test_bottom_up_merge_sort_stress()
 {
-  int size = 50000000;
+  int size = 5000;
   int arry[size], expected[size];
   int i,j;
   j =0;
   for(i=size-1; i >=0; i--) {
     arry[j++] = i;
   }
-  for(i=0;i<size;i++)expected[i] =i;
-  merge_sort_bottom_up(arry, size);
 
+  for(i=0;i<size;i++)expected[i] =i;
+
+  merge_sort_bottom_up(arry, size);
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
 
 }
@@ -32,7 +33,7 @@ void test_bottom_up_merge_sort_stress()
 /* test runner */
 int main()
 {
-  //RUN(test_bottom_up_merge_sort);
+  RUN(test_bottom_up_merge_sort);
   RUN(test_bottom_up_merge_sort_stress);
   return TEST_REPORT();
 }
