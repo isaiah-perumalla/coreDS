@@ -1,4 +1,4 @@
-#CFLAGS = -g -O0
+CFLAGS = -g -O0
 
 .PHONY: clean test
 
