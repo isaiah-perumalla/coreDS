@@ -8,7 +8,14 @@ int count = 0;
 
 int insertion_sort(int* a, int size)
 {
-
+  int i,j,tmp;
+  for(i=1; i<size; i++) {
+    for(j=i; (j>0 && (a[j-1] > a[j])); j--) {
+      tmp = a[j-1];
+      a[j-1]= a[j];
+      a[j] = tmp;
+    }
+  }    
   return 0;
 }
 

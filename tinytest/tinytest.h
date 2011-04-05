@@ -46,7 +46,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
+#include <string.h>
 /* Main assertion method */
 #define ASSERT(msg, expression) if (!tt_assert(__FILE__, __LINE__, (msg), (#expression), (expression) ? true : false)) return
 
@@ -54,10 +54,11 @@
 /* TODO: Generate readable error messages for assert_equals or assert_str_equals */
 #define ASSERT_EQUALS(expected, actual) ASSERT((#actual), (expected) == (actual))
 #define ASSERT_STRING_EQUALS(expected, actual) ASSERT((#actual), strcmp((expected),(actual)) == 0)
-
+#define ASSERT_ARRAY_EQUALS(expected, actual, size) ASSERT((#actual), memcmp((expected),(actual), (size)) == 0)
 
 /* Run a test() function */
 #define RUN(test_function) tt_execute((#test_function), (test_function))
+
 #define TEST_REPORT() tt_report()
 
 #define TT_COLOR_CODE 0x1B
@@ -85,6 +86,7 @@ void tt_execute(const char* name, void (*test_function)())
     tt_passes++;
   }
 }
+
 
 bool tt_assert(const char* file, int line, const char* msg, const char* expression, bool pass)
 {

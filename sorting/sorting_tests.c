@@ -1,14 +1,14 @@
-#include "../tinytest/tinytest.h"
+#include "tinytest.h"
 #include "sort.h"
+#include <stdlib.h>
 
-void test_bottom_up_merge_sort()
+void test_sort_small_input(int (*sort_function) (int* a, int size))
 {
   int size = 5;
   int arry[] = {6,1,4,2,-1};
   int expected[]={-1,1,2,4,6};
-  merge_sort_bottom_up(arry, size);
+  sort_function(arry, size);
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
-
 }
 
 void test_sort_large_input(int (*sort_function)(int* a, int size))
@@ -26,19 +26,22 @@ void test_sort_large_input(int (*sort_function)(int* a, int size))
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
 }
 
-void test_all_on_large_input()
+void test_merge_sort_bottom_up()
 {
-  int (*sort_functions[])(int* a, int size) = {merge_sort_bottom_up, insertion_sort };
-  int i, size=2;
-  for(i=0; i<size;i++) { 
-    test_sort_large_input(sort_functions[i]);
-  }
-  
+  test_sort_small_input(merge_sort_bottom_up);
+  test_sort_large_input(merge_sort_bottom_up);
 }
+  
+void test_insertion_sort()
+{
+  test_sort_small_input(insertion_sort);
+  test_sort_large_input(insertion_sort);
+}
+
 /* test runner */
 int main()
 {
-  RUN(test_bottom_up_merge_sort);
-  RUN(test_all_on_large_input);
+  RUN(test_merge_sort_bottom_up);
+  RUN(test_insertion_sort);
   return TEST_REPORT();
 }
