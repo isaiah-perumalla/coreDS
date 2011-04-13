@@ -9,6 +9,7 @@ void test_sort_small_input(int (*sort_function) (int* a, int size))
   int expected[]={-1,1,2,4,6};
   sort_function(arry, size);
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
+
 }
 
 void test_sort_large_input(int (*sort_function)(int* a, int size))
@@ -26,10 +27,27 @@ void test_sort_large_input(int (*sort_function)(int* a, int size))
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
 }
 
+
+void  test_binary_search_find_specified_element()
+{
+  int size = 10;
+  int arry[] = {10,12,80,90,100,101,101,101,102,102};
+  ASSERT_EQUALS(b_search(90, arry,size), 3);
+  ASSERT_EQUALS(~b_search(103, arry,size), 10);
+  ASSERT_EQUALS(~b_search(1, arry,size), 0);  
+  int index = b_search(101, arry,size);
+  ASSERT_EQUALS(arry[index], 101);      
+}
 void test_merge_sort_bottom_up()
 {
   test_sort_small_input(merge_sort_bottom_up);
   test_sort_large_input(merge_sort_bottom_up);
+}
+
+void test_opt_merge_sort_bottom_up()
+{
+  //  test_sort_small_input(optimized_merge_sort_bottom_up);
+  //  test_sort_large_input(optimized_merge_sort_bottom_up);
 }
   
 void test_insertion_sort()
@@ -43,5 +61,7 @@ int main()
 {
   RUN(test_merge_sort_bottom_up);
   RUN(test_insertion_sort);
+  RUN(test_opt_merge_sort_bottom_up);
+  RUN(test_binary_search_find_specified_element);
   return TEST_REPORT();
 }

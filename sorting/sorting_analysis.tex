@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}	% allow blackboard bold (aka N,R,Q sets)x
+
+\begin{document}
+
+\newcounter{OldSection}
+\renewcommand{\Re}{\ensuremath{\mathbb{R}}}
+\newcommand{\norm}[1]{\ensuremath{\Vert#1\Vert}}
+\newcommand{\abs}[1]{\ensuremath{\vert#1\vert}}
+\newcommand{\rsSum}{\ensuremath{S(\pi,f,\alpha) }}
+\newcommand{\ltwo}[1][]{\ensuremath{L^2#1}}
+\newcommand{\para}{
+   \vspace{.4cm}
+   \ifthenelse { \value{OldSection} < \value{section} }
+      { \setcounter{OldSection}{ \value{section} }
+        \setcounter{ParCount}{ 0 } }
+      {}
+   \stepcounter{ParCount}
+   \noindent
+   \bf \arabic{section}.\arabic{ParCount}. \rm \hspace{.2cm}
+ }
+
+\section{Analysis of sorting algorithms}
+ Definition using Mesh:
+
+let $\pi=\{x_0, x_1, \cdots, x_n\} $ is a partition over $[a,b]$ given $f$ and $g$ are bounded on the interval. $\norm{\pi} = max_{1\leq i \leq n}(x_i-x_{i-1})$ , then there exist a $\delta > 0$ and $A\in \Re$, for all $\epsilon > 0 $ such that the following holds
+\begin{eqnarray}
+  \Delta\alpha(t_i) &=& \alpha(t_{i})-\alpha(t_{i-1}) \nonumber \\
+  \rsSum  &=& \sum_{i=1}^nf(t_k)\Delta\alpha(t_i) \label{eq:mesh}\\
+ \text{for all}\  \epsilon >0 &&  \exists \  \delta >0 \ \text{such that} for all \norm{\pi}<\delta \nonumber \\
+   \abs{\rsSum - A} < \epsilon    
+ \end{eqnarray}
+
+
+for all $t_k \in [x_{i-1}, x_i]$
+From \ref{def:mesh}
+
+
+
+
+\end{document}
+
+
+
+
+
+

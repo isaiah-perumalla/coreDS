@@ -3,19 +3,31 @@
 #include <stdio.h>
 #include <string.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
-int count = 0;
-
 
 int insertion_sort(int* a, int size)
 {
-  int i,j,tmp;
+  int i,j,key;
   for(i=1; i<size; i++) {
-    for(j=i; (j>0 && (a[j-1] > a[j])); j--) {
-      tmp = a[j-1];
-      a[j-1]= a[j];
-      a[j] = tmp;
+    key = a[i];// store in temp to minimize swaps and make inner loop tighter
+    for(j=i; (j>0 && (a[j-1] > key)); j--) {
+      a[j]= a[j-1];
     }
+    a[j]=key;
   }    
+  return 0;
+}
+
+int binary_insertion_sort(int* a, int size)
+{
+  int i,j, key;
+  for(i=1; i<size;i++) {
+    key = a[i];
+    if(key >= a[i-1]) continue;
+    j = b_search(key,a,i-1);
+    if(j < 0) j = ~j;
+    //memmove
+    a[j]= key;
+  }
   return 0;
 }
 
@@ -42,15 +54,22 @@ static int bitonic_merge(int* arry, int sindex, int mindex, int endIndex)
   while(lpos <= rpos){
     value = (bitonic_arry[lpos] <= bitonic_arry[rpos]) ? bitonic_arry[lpos++] :bitonic_arry[rpos--];
     arry[sindex++] = value;
-    count++; //for test purposes
   }
   return 0;
 }
 
-			 
+/*
+merge sort with optimizations
+switches to insertion sort for small, sub arrays
+worst case running time of insertion sort n(n-1)/2 -n 
+
+int optimized_merge_sort_bottom_up(int* arry, int size)
+{
+  
+}
+*/			 
 int merge_sort_bottom_up(int* arry, int size)
 {
-  count=0;
   int start, mid, end, block_size =1;
   while(block_size < size) {
     start =0;
@@ -62,10 +81,24 @@ int merge_sort_bottom_up(int* arry, int size)
     }
     block_size <<= 1;
   }
-  printf("count=%d",count);
   return 0;
 };
 
+
+
+int b_search(int ele, int* arr, int size)
+{
+  int i,mid =0;
+  for(i=0;i<=size-1;) {
+    mid = i+ ((size-i)>>1);
+    if(arr[mid] == ele) return mid;
+    if(arr[mid] < ele) 
+      i = mid+1;
+    else
+      size = mid-1;
+  }
+  return -1*(i+1);
+}
 
 
 

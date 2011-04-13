@@ -1,4 +1,4 @@
-CFLAGS = -g -O0 -Wall -I../tinytest
+CFLAGS = -g -O0 -Wall -I../tinytest -pg
 
 .PHONY: clean test
 
@@ -10,4 +10,4 @@ test: sorting_tests
 	./sorting_tests
 
 clean:
-	rm -f *.o sorting_tests
+	rm -f *.o *.out *.aux sorting_tests
