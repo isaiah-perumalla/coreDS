@@ -22,10 +22,10 @@ int binary_insertion_sort(int* a, int size)
   int i,j, key;
   for(i=1; i<size;i++) {
     key = a[i];
-    if(key >= a[i-1]) continue;
+    if(key >= a[i-1]) continue; 
     j = b_search(key,a,i-1);
     if(j < 0) j = ~j;
-    //memmove
+    memmove(a+j+1, a+j, sizeof(int)*(i-j));
     a[j]= key;
   }
   return 0;
@@ -37,7 +37,6 @@ static void create_bitonic_seq_from(int* arry, int total_size, int lsize, int st
   for(i=0;i<lsize;i++) buffer[i] = arry[start_index++]; 
   for(i=total_size-1;i>=lsize;i--) buffer[i] = arry[start_index++];   
 }
-
 
 static int bitonic_merge(int* arry, int sindex, int mindex, int endIndex) 
 {
@@ -84,18 +83,16 @@ int merge_sort_bottom_up(int* arry, int size)
   return 0;
 };
 
-
-
 int b_search(int ele, int* arr, int size)
 {
-  int i,mid =0;
-  for(i=0;i<=size-1;) {
-    mid = i+ ((size-i)>>1);
+  int i,mid,hi = size-1;
+  for(i=0;i<=hi;) { 
+    mid = i+ ((hi-i)>>1);
     if(arr[mid] == ele) return mid;
     if(arr[mid] < ele) 
       i = mid+1;
     else
-      size = mid-1;
+      hi = mid-1;
   }
   return -1*(i+1);
 }
