@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}	% allow blackboard bold (aka N,R,Q sets)x
+
+\begin{document}
+
+\newcounter{OldSection}
+\renewcommand{\Re}{\ensuremath{\mathbb{R}}}
+\newcommand{\norm}[1]{\ensuremath{\Vert#1\Vert}}
+\newcommand{\abs}[1]{\ensuremath{\vert#1\vert}}
+\newcommand{\rsSum}{\ensuremath{S(\pi,f,\alpha) }}
+\newcommand{\ltwo}[1][]{\ensuremath{L^2#1}}
+\newcommand{\para}{
+   \vspace{.4cm}
+   \ifthenelse { \value{OldSection} < \value{section} }
+      { \setcounter{OldSection}{ \value{section} }
+        \setcounter{ParCount}{ 0 } }
+      {}
+   \stepcounter{ParCount}
+   \noindent
+   \bf \arabic{section}.\arabic{ParCount}. \rm \hspace{.2cm}
+ }
+
+\section{Notes}
+
+\begin{itemize}
+\item Array lookup are not free, minimize look up where possible, eg insertion_sort, minimize by switching to binary_insertion sort
+\item Binary search, keep track of hi and lo. In an interative binary search make sure hi and lo are not incremented unecessarily
+\end{itemize}
+
+\end{document}
+
+
+
+
+
+
