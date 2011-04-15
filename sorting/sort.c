@@ -32,7 +32,7 @@ int binary_insertion_sort(int* a, int size)
 }
 
 //basic partitioning strategy, 
-//very bad performance on nearly ordered files
+//very bad O(n^2) performance on nearly ordered files
 static int ele_partition(int* a, int lo, int hi)
 {
   //assert(lo<hi)
@@ -61,11 +61,21 @@ static int q_sort(int* a, int lo, int hi,
   return 0;
 }
 
-int quick_sort(int* a, int size)
+static int hybrid_q_sort(int* a, int lo, int hi)
+{
+  if(hi-lo+1 < 10) 
+}
+
+int basic_quick_sort(int* a, int size)
 {
   return q_sort(a, 0, size-1, ele_partition);
 }
 
+int quick_sort(int* a, int size)
+{
+  return hybrid_q_sort(a, 0, size-1);
+
+}
 static void create_bitonic_seq_from(int* arry, int total_size, int lsize, int start_index, int buffer[])
 {
   int i;
