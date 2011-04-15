@@ -31,6 +31,41 @@ int binary_insertion_sort(int* a, int size)
   return 0;
 }
 
+//basic partitioning strategy, 
+//very bad performance on nearly ordered files
+static int ele_partition(int* a, int lo, int hi)
+{
+  //assert(lo<hi)
+  int i,j,tmp,pivot = a[hi];  
+  j=hi;
+  for(i=lo-1;;){
+    while(a[++i]< pivot);
+    while(a[--j]>pivot && j >i);
+    if(j<=i) break;
+    tmp = a[i];
+    a[i] = a[j];
+    a[j]=tmp;
+  }
+  a[hi] = a[i];
+  a[i] = pivot;
+  return i;
+}
+
+static int q_sort(int* a, int lo, int hi, 
+		  int (*partition) (int* a, int start, int end))
+{
+  if(hi <= lo) return 1;
+  int mid = partition(a, lo, hi);
+  q_sort(a, lo, mid-1, partition);
+  q_sort(a, mid+1, hi, partition);
+  return 0;
+}
+
+int quick_sort(int* a, int size)
+{
+  return q_sort(a, 0, size-1, ele_partition);
+}
+
 static void create_bitonic_seq_from(int* arry, int total_size, int lsize, int start_index, int buffer[])
 {
   int i;

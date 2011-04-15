@@ -10,11 +10,24 @@ void test_sort_small_input(int (*sort_function) (int* a, int size))
   sort_function(arry, size);
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
 
+  int dup[] = {1,1,1,1,1};
+  int exp[] = {1,1,1,1,1};
+  sort_function(dup, size);
+  ASSERT_ARRAY_EQUALS(exp, dup, sizeof(int)*size); 
+
+  
+}
+
+void test_sort_input_mostly_duplicates(int (*sort_function)(int* a, int size))
+{
+
+
+  
 }
 
 void test_sort_large_input(int (*sort_function)(int* a, int size))
 {
-  int size = 500000;
+  int size = 5000;
   int arry[size], expected[size];
   int i,j;
   j =0;
@@ -65,15 +78,23 @@ void test_binary_insertion_sort()
 void test_insertion_sort()
 {
   test_sort_small_input(insertion_sort);
-  //  test_sort_large_input(insertion_sort);
+  test_sort_large_input(insertion_sort);
+}
+
+void test_quick_sort()
+{
+  test_sort_small_input(quick_sort);
+  test_sort_large_input(quick_sort);
 }
 
 /* test runner */
 int main()
 {
   RUN(test_merge_sort_bottom_up);
-  //  RUN(test_insertion_sort);
+  RUN(test_insertion_sort);
   RUN(test_binary_insertion_sort);
-  //  RUN(test_binary_search_find_specified_element);
+  RUN(test_quick_sort);  
+  RUN(test_binary_search_find_specified_element);
+
   return TEST_REPORT();
 }
