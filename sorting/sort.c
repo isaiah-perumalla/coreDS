@@ -4,13 +4,25 @@
 #include <string.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
 
+static void  swap(int *a, int* b)
+{
+  int tmp = *a;
+  *a = *b;
+  *b = tmp;
+}
+
+
 int insertion_sort(int* a, int size)
 {
   int i,j,key;
+  for(i=size-1; i >0;i--) 
+    if(a[i-1] >  a[i]) swap(&a[i-1], &a[i]);
   for(i=1; i<size; i++) {
     key = a[i];// store in temp to minimize swaps and make inner loop tighter
-    for(j=i; (j>0 && (a[j-1] > key)); j--) {
+    j=i;
+    while(a[j-1] > key) {
       a[j]= a[j-1];
+      j--;
     }
     a[j]=key;
   }    
@@ -31,12 +43,6 @@ int binary_insertion_sort(int* a, int size)
   return 0;
 }
 
-static void  swap(int *a, int* b)
-{
-  int tmp = *a;
-  *a = *b;
-  *b = tmp;
-}
 
 //basic partitioning strategy, 
 //very bad O(n^2) performance on nearly ordered files
@@ -56,6 +62,10 @@ static int* basic_partition(int* start, int* end)
   return i;
 }
 
+static int* median_of_3_partition(int* start, int* end)
+{
+  return 0;
+}
 
 static int q_sort(int *start, int* end, 
 		   int* (*partition) (int* l, int* r))
