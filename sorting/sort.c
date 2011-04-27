@@ -42,29 +42,31 @@ static void  swap(int *a, int* b)
 
 //basic partitioning strategy, 
 //very bad O(n^2) performance on nearly ordered files
-static int ele_partition(int* a, int lo,  int hi)
+
+static int* basic_partition(int* start, int* end)
 {
-  //assert(lo<hi)
-  int i,j,pivot = a[hi];  
-  j=hi;
-  for(i=lo-1;;){
-    while(a[++i]< pivot);
-    while(a[--j] > pivot && j >i);
-    if(j<=i) break;
-    swap(&a[i], &a[j]);
+  int *i, *j, pivot = *end;
+  j=end;
+  for(i=start-1;;) {
+    while(*(++i) < pivot);
+    while(*(--j) > pivot && j > i);
+    if(j <= i) break;
+    swap(i,j);
   }
-  a[hi] = a[i];
-  a[i] = pivot;
+  *end = *i;
+  *i = pivot;
   return i;
 }
 
-static int q_sort(int* a, int lo, int hi, 
-		  int (*partition) (int* a, int start, int end))
+
+static int q_sort(int *start, int* end, 
+		   int* (*partition) (int* l, int* r))
 {
-  if(hi <= lo) return 1;
-  int mid = partition(a, lo, hi);
-  q_sort(a, lo, mid-1, partition);
-  q_sort(a, mid+1, hi, partition);
+  if(start > end) return 1;
+  if(start == end) return 0;
+  int *mid = partition(start, end);
+  q_sort(start, mid-1, partition);
+  q_sort(mid+1, end, partition);
   return 0;
 }
 
@@ -75,7 +77,7 @@ static int hybrid_q_sort(int* a, int lo, int hi)
 
 int basic_quick_sort(int* a, int size)
 {
-  return q_sort(a, 0, size-1, ele_partition);
+  return q_sort(a, a+size-1, basic_partition);
 }
 
 int quick_sort(int* a, int size)
