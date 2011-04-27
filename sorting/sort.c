@@ -1,10 +1,8 @@
 #include "sort.h"
-#include "search.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
-
 
 int insertion_sort(int* a, int size)
 {
@@ -62,17 +60,20 @@ static int* basic_partition(int* start, int* end)
 static int q_sort(int *start, int* end, 
 		   int* (*partition) (int* l, int* r))
 {
-  if(start > end) return 1;
-  if(start == end) return 0;
+  if(start >= end) return 0;
   int *mid = partition(start, end);
   q_sort(start, mid-1, partition);
   q_sort(mid+1, end, partition);
   return 0;
 }
 
-static int hybrid_q_sort(int* a, int lo, int hi)
+static void  hybrid_q_sort(int* start, int* end,
+			   int* (*partition)(int* l, int* r))
 {
-  return 0;
+  if((end - start) <= 10) return;
+  int *mid = partition(start, end);
+  hybrid_q_sort(start, mid-1, partition);
+  hybrid_q_sort(mid+1, end, partition);
 }
 
 int basic_quick_sort(int* a, int size)
@@ -82,9 +83,10 @@ int basic_quick_sort(int* a, int size)
 
 int quick_sort(int* a, int size)
 {
-  return hybrid_q_sort(a, 0, size-1);
-
+  hybrid_q_sort(a, a+ size-1, basic_partition);
+  return insertion_sort(a, size);
 }
+
 static void create_bitonic_seq_from(int* arry, int total_size, int lsize, int start_index, int buffer[])
 {
   int i;

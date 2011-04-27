@@ -88,6 +88,12 @@ void test_basic_quick_sort()
   test_sort_large_input(basic_quick_sort);
 }
 
+void test_hybrid_quick_sort()
+{
+  test_sort_small_input(quick_sort);
+  test_sort_large_input(quick_sort);
+}
+
 /* test runner */
 int main()
 {
@@ -95,6 +101,7 @@ int main()
   RUN(test_insertion_sort);
   RUN(test_binary_insertion_sort);
   RUN(test_basic_quick_sort);  
+  RUN(test_hybrid_quick_sort);  
   RUN(test_binary_search_find_specified_element);
 
   return TEST_REPORT();
