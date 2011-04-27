@@ -1,5 +1,6 @@
 #include "tinytest.h"
 #include "sort.h"
+#include "search.h"
 #include <stdlib.h>
 
 void test_sort_small_input(int (*sort_function) (int* a, int size))

@@ -1,8 +1,10 @@
 #include "sort.h"
+#include "search.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
+
 
 int insertion_sort(int* a, int size)
 {
@@ -31,20 +33,25 @@ int binary_insertion_sort(int* a, int size)
   return 0;
 }
 
+static void  swap(int *a, int* b)
+{
+  int tmp = *a;
+  *a = *b;
+  *b = tmp;
+}
+
 //basic partitioning strategy, 
 //very bad O(n^2) performance on nearly ordered files
-static int ele_partition(int* a, int lo, int hi)
+static int ele_partition(int* a, int lo,  int hi)
 {
   //assert(lo<hi)
-  int i,j,tmp,pivot = a[hi];  
+  int i,j,pivot = a[hi];  
   j=hi;
   for(i=lo-1;;){
     while(a[++i]< pivot);
-    while(a[--j]>pivot && j >i);
+    while(a[--j] > pivot && j >i);
     if(j<=i) break;
-    tmp = a[i];
-    a[i] = a[j];
-    a[j]=tmp;
+    swap(&a[i], &a[j]);
   }
   a[hi] = a[i];
   a[i] = pivot;
@@ -63,7 +70,7 @@ static int q_sort(int* a, int lo, int hi,
 
 static int hybrid_q_sort(int* a, int lo, int hi)
 {
-  if(hi-lo+1 < 10) 
+  return 0;
 }
 
 int basic_quick_sort(int* a, int size)
@@ -128,6 +135,7 @@ int merge_sort_bottom_up(int* arry, int size)
   return 0;
 };
 
+
 int b_search(int ele, int* arr, int size)
 {
   int i,mid,hi = size-1;
@@ -142,6 +150,11 @@ int b_search(int ele, int* arr, int size)
   return -1*(i+1);
 }
 
+
+int find_k_smallest_linear(int k, int* a1, int size1, int* a2, int size2)
+{
+  return 0;
+}
 
 
 

@@ -1,10 +1,10 @@
-CFLAGS = -O0 -g -Wall -I../tinytest -pg
+CFLAGS = -O0 -g -Wall -I../tinytest  -pg
 
 .PHONY: clean test
 
-all:sort.o sorting_tests
+all:sort.o  sorting_tests
 
-sorting_tests: sort.o
+sorting_tests: sort.o 
 
 test: sorting_tests
 	./sorting_tests
