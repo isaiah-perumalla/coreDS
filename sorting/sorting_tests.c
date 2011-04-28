@@ -29,7 +29,7 @@ void test_sort_input_mostly_duplicates(int (*sort_function)(int* a, int size))
 
 void test_sort_large_input(int (*sort_function)(int* a, int size))
 {
-  int size = 9000;
+  int size = 90000;
   int arry[size], expected[size];
   int i,j;
   j =0;

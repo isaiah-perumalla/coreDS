@@ -28,6 +28,10 @@
 \begin{itemize}
 \item Array lookup are not free, minimize look up where possible, eg insertion_sort, minimize by switching to binary_insertion sort
 \item Binary search, keep track of hi and lo. In an interative binary search make sure hi and lo are not incremented unecessarily
+\item quick inner loop will not terminate if a[i]=a[j]=pivot if the inner loop is as below 
+while(a[i] < pivot) i++;
+while(a[j]>pivot) j--;
+
 \end{itemize}
 
 \end{document}

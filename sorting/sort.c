@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
 
 
@@ -71,6 +72,22 @@ static int* basic_partition(int* start, int* end)
   return i;
 }
 
+static int* q_partition(int* start, int* end)
+{
+  assert(*(start-1) <= *end);
+  int *i, *j, pivot = *end;
+  j=end;
+  for(i=start-1;;) {
+    while(*(++i) < pivot);
+    while(*(--j) > pivot);
+    if(j <= i) break;
+    swap(i,j);
+  }
+  *end = *i;
+  *i = pivot;
+  return i;
+}
+
 static int* median_of_3_partition(int* start, int* end)
 {
   if(start >= end) return end;
@@ -79,7 +96,7 @@ static int* median_of_3_partition(int* start, int* end)
   compare_n_swap(start, end);
   compare_n_swap(mid, end);
   swap(mid, end-1);
-  return start+1 >  end-1 ? start : basic_partition(start+1, end-1);
+  return start+1 >= end-1 ? start : q_partition(start+1, end-1);
 }
 
 static int q_sort(int *start, int* end, 
