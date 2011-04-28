@@ -4,6 +4,7 @@
 #include <string.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
 
+
 static void  swap(int *a, int* b)
 {
   int tmp = *a;
