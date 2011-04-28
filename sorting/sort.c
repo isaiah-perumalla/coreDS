@@ -12,6 +12,14 @@ static void  swap(int *a, int* b)
   *b = tmp;
 }
 
+static void compare_n_swap(int* a, int* b)
+{
+  if(*a > *b) {
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+  }
+}
 
 int insertion_sort(int* a, int size)
 {
@@ -65,7 +73,13 @@ static int* basic_partition(int* start, int* end)
 
 static int* median_of_3_partition(int* start, int* end)
 {
-  return 0;
+  if(start >= end) return end;
+  int* mid = start + (end-start)/2;
+  compare_n_swap(start, mid);
+  compare_n_swap(start, end);
+  compare_n_swap(mid, end);
+  swap(mid, end-1);
+  return start+1 >  end-1 ? start : basic_partition(start+1, end-1);
 }
 
 static int q_sort(int *start, int* end, 
@@ -94,7 +108,7 @@ int basic_quick_sort(int* a, int size)
 
 int quick_sort(int* a, int size)
 {
-  hybrid_q_sort(a, a+ size-1, basic_partition);
+  hybrid_q_sort(a, a+ size-1, median_of_3_partition);
   return insertion_sort(a, size);
 }
 
