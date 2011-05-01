@@ -4,6 +4,12 @@
 #include <string.h>
 #include <assert.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
+#define SWAP(x,y, swap_size) do \ 
+   { unsigned char swap_temp[swap_size]; \
+     memcpy(swap_temp,y,swap_size); \
+     memcpy(y,x, swap_size); \
+     memcpy(x,swap_temp,swap_size); \
+    } while(0)
 
 
 static void  swap(int *a, int* b)
@@ -24,11 +30,12 @@ static void compare_n_swap(int* a, int* b)
 
 int insertion_sort(int* a, int size)
 {
-  int i,j,key;
+  int i,j, key;
+
   for(i=size-1; i >0;i--) 
     if(a[i-1] >  a[i]) swap(&a[i-1], &a[i]);
   for(i=1; i<size; i++) {
-    key = a[i];// store in temp to minimize swaps and make inner loop tighter
+    key = a[i];
     j=i;
     while(a[j-1] > key) {
       a[j]= a[j-1];
@@ -39,17 +46,49 @@ int insertion_sort(int* a, int size)
   return 0;
 }
 
-int binary_insertion_sort(int* a, int size)
+int ins_sort(void* arry, int size, size_t esize, 
+	     int(*compare)(const void* key1, const void* key2))
 {
-  int i,j, key;
-  for(i=1; i<size;i++) {
-    key = a[i];
-    if(key >= a[i-1]) continue; 
-    j = b_search(key,a,i-1);
-    if(j < 0) j = ~j;
-    memmove(a+j+1, a+j, sizeof(int)*(i-j));
-    a[j]= key;
+  char* a = (char*) arry;
+  void* key = malloc(esize);
+  if(key == NULL) return -1;
+
+  int i,j;
+  //find smallest element and put in position 0, serves as sentinel to tighten inner loop  
+  for(i=size-1; i >0;i--) {
+    void* ele_i = a+ i*esize;
+    void* ele_i_minus_1 = a+(i-1)*esize;
+    if(compare(ele_i_minus_1, ele_i) > 0) SWAP(ele_i, ele_i_minus_1, esize);
   }
+  for(i=1; i<size; i++) {
+    memcpy(key, a+i*esize, esize);// store in temp to minimize swaps and make inner loop tighter
+    j=i;
+    while(compare(a+(j-1)*esize, key) > 0) {
+      memcpy(a+j*esize, a+(j-1)*esize, esize);
+      j--;
+    }
+    memcpy(a+j*esize, key, esize);
+  }    
+  free(key);
+  return 0;
+}
+
+int binary_ins_sort(void* arry, int size, size_t esize, 
+			  int(*compare)(const void* key1, const void* key2))
+{
+  void* key = malloc(esize);
+  if(key == NULL ) return -1;
+  int i,j;
+  char* a = (char*)arry;
+  for(i=1; i<size;i++) {
+    memcpy(key, a+i*esize, esize);
+    if(compare(key, a+(i-1)*esize) != -1) continue; 
+    j = binary_search(key,arry,i-1, esize, compare);
+    if(j < 0) j = ~j;
+    memmove(a+(j+1)*esize, a+j*esize, (i-j)*esize);
+    memcpy(a+j*esize, key, esize);
+  }
+  free(key);
   return 0;
 }
 
@@ -181,7 +220,11 @@ int merge_sort_bottom_up(int* arry, int size)
   return 0;
 };
 
-
+int binary_search(void* ele, void* arry, int size, size_t esize,
+		  int (*compare)(const void* a, const void* b))
+{
+  return -1;
+}
 int b_search(int ele, int* arr, int size)
 {
   int i,mid,hi = size-1;
