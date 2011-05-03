@@ -220,23 +220,21 @@ int merge_sort_bottom_up(int* arry, int size)
   return 0;
 };
 
-int binary_search(void* ele, void* arry, int size, size_t esize,
+int binary_search(const void* ele, void* arry, int size, size_t esize,
 		  int (*compare)(const void* a, const void* b))
 {
-  return -1;
-}
-int b_search(int ele, int* arr, int size)
-{
-  int i,mid,hi = size-1;
-  for(i=0;i<=hi;) { 
-    mid = i+ ((hi-i)>>1);
-    if(arr[mid] == ele) return mid;
-    if(arr[mid] < ele) 
-      i = mid+1;
-    else
-      hi = mid-1;
+  char* start = (char*)arry;
+  int hi, lo;
+  hi = size-1;
+  lo = 0;
+  while(lo <= hi) {
+    int mid = lo + ((hi-lo)>>1);
+    int cmp = compare(ele, start+mid*esize);
+    if(cmp == 1) lo = mid+1;
+    if(cmp == 0) return mid;
+    else hi = mid-1;
   }
-  return -1*(i+1);
+return -1*(lo+1);
 }
 
 

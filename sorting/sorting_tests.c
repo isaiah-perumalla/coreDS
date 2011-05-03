@@ -3,6 +3,18 @@
 #include "search.h"
 #include <stdlib.h>
 
+
+static int compare_int(const void* key1, const void* key2)
+{
+  int a, b;
+  a = *(const int*) key1;
+  b = *(const int*) key2;
+  if(a>b) return 1;
+  else if( a<b) return -1;
+  return 0;
+}
+
+
 bool test_sort_small_input(int (*sort_function) (int* a, int size))
 {
   int size = 5;
@@ -30,7 +42,7 @@ void test_sort_input_mostly_duplicates(int (*sort_function)(int* a, int size))
 
 bool test_sort_large_input(int (*sort_function)(int* a, int size))
 {
-  int size = 5;
+  int size = 5000;
   int arry[size], expected[size];
   int i,j;
   j =0;
@@ -47,12 +59,17 @@ bool test_binary_search_element_not_found()
 {
   int size = 10;
   int arry[] = {10,12,80,90,100,101,101,101,102,102};
-  
-  ASSERT_EQUALS(~b_search(103, arry,size), 10);
-  ASSERT_EQUALS(~b_search(1, arry,size), 0);  
-  ASSERT_EQUALS(~b_search(11, arry,size), 1);  
+  int target  =103;
+  size_t esize = sizeof(target);
+   
+  ASSERT_EQUALS(~binary_search(&target, arry,size, esize,compare_int ), 10);
+  target=1;
+  ASSERT_EQUALS(~binary_search(&target, arry,size, esize, compare_int), 0);  
+  target= 11;
+  ASSERT_EQUALS(~binary_search(&target, arry,size, esize, compare_int), 1);  
   int a[]={1,4,6};
-  int index = ~b_search(2,a,3);
+  target=2;
+  int index = ~binary_search(&target,a,3, esize, compare_int);
   ASSERT_EQUALS(index, 1);
   return true;
 }
@@ -61,23 +78,15 @@ bool  test_binary_search_find_specified_element()
 {
   int size = 10;
   int arry[] = {10,12,80,90,100,101,101,101,102,102};
-  ASSERT_EQUALS(b_search(90, arry,size), 3);
-  int index = b_search(12, arry,size);
+  size_t esize = sizeof(int);
+  ASSERT_EQUALS(binary_search(&arry[3], arry,size, esize, compare_int), 3);
+  int index = binary_search(&arry[1], arry,size, esize, compare_int);
   ASSERT_EQUALS(index, 1);  
-  index = b_search(101, arry,size);
+  index = binary_search(&arry[5], arry,size, esize, compare_int);
   ASSERT_EQUALS(arry[index], 101);      
   return true;
 }
 
-static int compare_int(const void* key1, const void* key2)
-{
-  int a, b;
-  a = *(const int*) key1;
-  b = *(const int*) key2;
-  if(a>b) return 1;
-  else if( a<b) return -1;
-  return 0;
-}
 
 static int  _binary_insertion_sort(int* a, int size)
 {
