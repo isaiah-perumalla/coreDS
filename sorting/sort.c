@@ -96,19 +96,22 @@ int binary_ins_sort(void* arry, int size, size_t esize,
 //basic partitioning strategy, 
 //very bad O(n^2) performance on nearly ordered files
 
-static int* basic_partition(int* start, int* end)
+
+static int simple_partition(void* arry, int start_index, int end_index, size_t esize, 
+			      int (*compare)(const void* key1, const void* key2))
 {
-  int *i, *j, pivot = *end;
-  j=end;
-  for(i=start-1;;) {
-    while(*(++i) < pivot);
-    while(*(--j) > pivot && j > i);
-    if(j <= i) break;
-    swap(i,j);
+  char*  start= (char*)arry;
+  void* pivot = start+end_index*esize;
+  for(start_index--;;) {
+    while(compare(start+((++start_index)*esize), pivot) < 0);
+    while(compare(start+((--end_index)*esize), pivot) > 0) if(end_index<=start_index) break;
+    if(end_index <= start_index) break;
+    void* left_ele = start+start_index*esize;
+    void* right_ele = start+end_index*esize;
+    SWAP(left_ele, right_ele, esize);
   }
-  *end = *i;
-  *i = pivot;
-  return i;
+  SWAP(start+start_index*esize, pivot, esize);
+  return start_index;
 }
 
 static int* q_partition(int* start, int* end)
@@ -138,15 +141,6 @@ static int* median_of_3_partition(int* start, int* end)
   return start+1 >= end-1 ? start : q_partition(start+1, end-1);
 }
 
-static int q_sort(int *start, int* end, 
-		   int* (*partition) (int* l, int* r))
-{
-  if(start >= end) return 0;
-  int *mid = partition(start, end);
-  q_sort(start, mid-1, partition);
-  q_sort(mid+1, end, partition);
-  return 0;
-}
 
 static void  hybrid_q_sort(int* start, int* end,
 			   int* (*partition)(int* l, int* r))
@@ -157,9 +151,21 @@ static void  hybrid_q_sort(int* start, int* end,
   hybrid_q_sort(mid+1, end, partition);
 }
 
-int basic_quick_sort(int* a, int size)
+static void standard_qsort(void* arry, int l, int r, size_t esize,
+			   int (*partition)(void* arry, int lo, int hi, size_t esize,
+					    int (*compare)(const void* key1, const void* key2) ),
+			  int (*compare)(const void* key1, const void* key2))
 {
-  return q_sort(a, a+size-1, basic_partition);
+  if(r <= l) return;
+  int mid = partition(arry, l, r, esize, compare);
+  standard_qsort(arry, l, mid-1, esize, partition, compare);
+  standard_qsort(arry, mid+1, r, esize, partition, compare);
+}
+int basic_quick_sort(void* arry, int size, size_t esize,
+		     int (*compare)(const void* key1, const void* key2))
+{
+  standard_qsort(arry, 0, size-1, esize, simple_partition, compare);
+  return 1;
 }
 
 int quick_sort(int* a, int size)
