@@ -102,6 +102,11 @@ static int _basic_quick_sort(int* a, int size)
 {
   return basic_quick_sort(a, size, sizeof(int), compare_int);
 }
+
+static int _hybrid_qsort(int* a, int size)
+{
+  return quick_sort(a, size, sizeof(int), compare_int);
+}
 void test_merge_sort_bottom_up()
 {
   test_sort_small_input(merge_sort_bottom_up);
@@ -129,8 +134,8 @@ void test_basic_quick_sort()
 
 void test_hybrid_quick_sort()
 {
-  test_sort_small_input(quick_sort);
-  test_sort_large_input(quick_sort);
+  test_sort_small_input(_hybrid_qsort);
+  test_sort_large_input(_hybrid_qsort);
 }
 
 /* test runner */
@@ -142,7 +147,7 @@ int main()
   RUN(test_basic_quick_sort);  
 
   RUN(test_hybrid_quick_sort);  
-  // RUN(test_binary_search_find_specified_element);
+  //  RUN(test_binary_search_find_specified_element);
 
   return TEST_REPORT();
 }

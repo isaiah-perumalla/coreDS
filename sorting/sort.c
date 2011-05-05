@@ -4,7 +4,7 @@
 #include <string.h>
 #include <assert.h>
 #define MIN(A,B) ((A) < (B) ? (A):(B))
-#define SWAP(x,y, swap_size) do \ 
+#define SWAP(x,y, swap_size) do \
    { unsigned char swap_temp[swap_size]; \
      memcpy(swap_temp,y,swap_size); \
      memcpy(y,x, swap_size); \
@@ -12,42 +12,16 @@
     } while(0)
 
 
-static void  swap(int *a, int* b)
-{
-  int tmp = *a;
-  *a = *b;
-  *b = tmp;
-}
 
-static void compare_n_swap(int* a, int* b)
+static void compare_n_swap(void* a, void* b, size_t esize, compare_fn compare)
 {
-  if(*a > *b) {
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
+  if(compare(a, b) > 0) {
+    SWAP(a, b, esize);
   }
 }
 
-int insertion_sort(int* a, int size)
-{
-  int i,j, key;
 
-  for(i=size-1; i >0;i--) 
-    if(a[i-1] >  a[i]) swap(&a[i-1], &a[i]);
-  for(i=1; i<size; i++) {
-    key = a[i];
-    j=i;
-    while(a[j-1] > key) {
-      a[j]= a[j-1];
-      j--;
-    }
-    a[j]=key;
-  }    
-  return 0;
-}
-
-int ins_sort(void* arry, int size, size_t esize, 
-	     int(*compare)(const void* key1, const void* key2))
+int ins_sort(void* arry, int size, size_t esize, compare_fn compare)
 {
   char* a = (char*) arry;
   void* key = malloc(esize);
@@ -73,8 +47,7 @@ int ins_sort(void* arry, int size, size_t esize,
   return 0;
 }
 
-int binary_ins_sort(void* arry, int size, size_t esize, 
-			  int(*compare)(const void* key1, const void* key2))
+int binary_ins_sort(void* arry, int size, size_t esize, compare_fn compare)
 {
   void* key = malloc(esize);
   if(key == NULL ) return -1;
@@ -98,7 +71,7 @@ int binary_ins_sort(void* arry, int size, size_t esize,
 
 
 static int simple_partition(void* arry, int start_index, int end_index, size_t esize, 
-			      int (*compare)(const void* key1, const void* key2))
+			    compare_fn compare)
 {
   char*  start= (char*)arry;
   void* pivot = start+end_index*esize;
@@ -114,47 +87,53 @@ static int simple_partition(void* arry, int start_index, int end_index, size_t e
   return start_index;
 }
 
-static int* q_partition(int* start, int* end)
+static int q_partition(void* arry, int l_index, int r_index, size_t esize, compare_fn compare)
 {
-  assert(*(start-1) <= *end);
-  int *i, *j, pivot = *end;
-  j=end;
-  for(i=start-1;;) {
-    while(*(++i) < pivot);
-    while(*(--j) > pivot);
+  char* start = (char*)arry;
+  assert(compare(start+(l_index-1)*esize, start+r_index*esize) < 0 );
+  void* pivot = start+r_index*esize;
+  int i,j;
+  j = r_index;
+  for(i=l_index-1;;) {
+    while(compare(start+((++i)*esize), pivot) < 0);
+    while(compare(start+((--j)*esize), pivot) > 0);
     if(j <= i) break;
-    swap(i,j);
+    SWAP(start+i*esize,start+j*esize, esize);
   }
-  *end = *i;
-  *i = pivot;
+  SWAP(start+i*esize, pivot, esize);
   return i;
 }
 
-static int* median_of_3_partition(int* start, int* end)
+static int median_of_3_partition(void* arry, int start_index, int end_index, size_t esize, 
+				 compare_fn compare)
 {
-  if(start >= end) return end;
-  int* mid = start + (end-start)/2;
-  compare_n_swap(start, mid);
-  compare_n_swap(start, end);
-  compare_n_swap(mid, end);
-  swap(mid, end-1);
-  return start+1 >= end-1 ? start : q_partition(start+1, end-1);
+  char* start = (char*)arry;
+  if(start_index >= end_index) return end_index;
+  int mid = start_index + ((end_index-start_index)>>1);
+  compare_n_swap(start+start_index*esize, start+mid*esize, esize, compare);
+  compare_n_swap(start+start_index*esize, start+end_index*esize, esize, compare);
+  compare_n_swap(start+mid*esize, start+end_index*esize, esize, compare);
+  SWAP(start+mid*esize, start+(end_index-1)*esize, esize);
+  return start_index+1 >= end_index-1  ? start_index : q_partition(arry, start_index+1, end_index-1, esize, compare);
 }
 
 
-static void  hybrid_q_sort(int* start, int* end,
-			   int* (*partition)(int* l, int* r))
+static void  hybrid_q_sort(void* arry, int start_index, int end_index, size_t esize,
+			   int (*partition)(void* arry, int lo, int hi, size_t esize,
+					    compare_fn compare),
+			   compare_fn compare)
 {
-  if((end - start) <= 10) return;
-  int *mid = partition(start, end);
-  hybrid_q_sort(start, mid-1, partition);
-  hybrid_q_sort(mid+1, end, partition);
+
+  if((end_index - start_index) <= 10) return;
+  int mid = partition(arry, start_index, end_index,esize, compare);
+  hybrid_q_sort(arry, start_index, mid-1, esize, partition, compare);
+  hybrid_q_sort(arry,mid+1, end_index, esize, partition, compare);
 }
 
 static void standard_qsort(void* arry, int l, int r, size_t esize,
 			   int (*partition)(void* arry, int lo, int hi, size_t esize,
-					    int (*compare)(const void* key1, const void* key2) ),
-			  int (*compare)(const void* key1, const void* key2))
+					    compare_fn compare),
+			   compare_fn compare)
 {
   if(r <= l) return;
   int mid = partition(arry, l, r, esize, compare);
@@ -168,10 +147,12 @@ int basic_quick_sort(void* arry, int size, size_t esize,
   return 1;
 }
 
-int quick_sort(int* a, int size)
+int quick_sort(void* arry, int size, size_t esize, compare_fn compare)
+
+
 {
-  hybrid_q_sort(a, a+ size-1, median_of_3_partition);
-  return insertion_sort(a, size);
+  hybrid_q_sort(arry,0,size-1, esize, median_of_3_partition, compare);
+  return ins_sort(arry, size, esize, compare);
 }
 
 static void create_bitonic_seq_from(int* arry, int total_size, int lsize, int start_index, int buffer[])
@@ -227,7 +208,7 @@ int merge_sort_bottom_up(int* arry, int size)
 };
 
 int binary_search(const void* ele, void* arry, int size, size_t esize,
-		  int (*compare)(const void* a, const void* b))
+		  compare_fn compare)
 {
   char* start = (char*)arry;
   int hi, lo;
