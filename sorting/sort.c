@@ -24,9 +24,7 @@ static void compare_n_swap(void* a, void* b, size_t esize, compare_fn compare)
 int ins_sort(void* arry, int size, size_t esize, compare_fn compare)
 {
   char* a = (char*) arry;
-  void* key = malloc(esize);
-  if(key == NULL) return -1;
-
+  unsigned char key[esize]; //allocate to store key
   int i,j;
   //find smallest element and put in position 0, serves as sentinel to tighten inner loop  
   for(i=size-1; i >0;i--) {
@@ -43,15 +41,13 @@ int ins_sort(void* arry, int size, size_t esize, compare_fn compare)
     }
     memcpy(a+j*esize, key, esize);
   }    
-  free(key);
   return 0;
 }
 
 int binary_ins_sort(void* arry, int size, size_t esize, compare_fn compare)
 {
-  void* key = malloc(esize);
-  if(key == NULL ) return -1;
   int i,j;
+  unsigned char key[esize];
   char* a = (char*)arry;
   for(i=1; i<size;i++) {
     memcpy(key, a+i*esize, esize);
@@ -61,7 +57,6 @@ int binary_ins_sort(void* arry, int size, size_t esize, compare_fn compare)
     memmove(a+(j+1)*esize, a+j*esize, (i-j)*esize);
     memcpy(a+j*esize, key, esize);
   }
-  free(key);
   return 0;
 }
 
