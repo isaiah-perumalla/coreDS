@@ -5,7 +5,7 @@ int ins_sort(void* a, int size, size_t esize, compare_fn compare);
 
 int binary_ins_sort(void* a, int size, size_t esize, compare_fn compare);
 
-int merge_sort_bottom_up(int* arry, int size);
+int merge_sort_bottom_up(void* arry, int size, size_t esize, compare_fn compare);
 
 int basic_quick_sort(void* arry, int size, size_t esize, compare_fn compare);
 int quick_sort(void* arry, int size, size_t esize, compare_fn compare);

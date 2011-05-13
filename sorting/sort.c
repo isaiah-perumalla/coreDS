@@ -135,8 +135,7 @@ static void standard_qsort(void* arry, int l, int r, size_t esize,
   standard_qsort(arry, l, mid-1, esize, partition, compare);
   standard_qsort(arry, mid+1, r, esize, partition, compare);
 }
-int basic_quick_sort(void* arry, int size, size_t esize,
-		     int (*compare)(const void* key1, const void* key2))
+int basic_quick_sort(void* arry, int size, size_t esize, compare_fn compare)
 {
   standard_qsort(arry, 0, size-1, esize, simple_partition, compare);
   return 1;
@@ -150,30 +149,42 @@ int quick_sort(void* arry, int size, size_t esize, compare_fn compare)
   return ins_sort(arry, size, esize, compare);
 }
 
-static void create_bitonic_seq_from(int* arry, int total_size, int lsize, int start_index, int buffer[])
+static void create_bitonic_seq_from(void* arry, size_t esize, int total_size, int lsize, int start_index, 
+				    char buffer[])
 {
   int i;
-  for(i=0;i<lsize;i++) buffer[i] = arry[start_index++]; 
-  for(i=total_size-1;i>=lsize;i--) buffer[i] = arry[start_index++];   
+  start_index--;
+  for(i=0;i<lsize;i++) memcpy(buffer+i*esize, arry+(++start_index)*esize, esize); 
+  for(i=total_size-1;i>=lsize;i--) memcpy(buffer+i*esize,  arry+(++start_index)*esize, esize);   
 }
 
-static int bitonic_merge(int* arry, int sindex, int mindex, int endIndex) 
+static int bitonic_merge(void* a, int sindex, int mindex, int endIndex, size_t esize, compare_fn compare) 
 {
   if(sindex >= endIndex) return 0;
-  if(arry[mindex-1] <= arry[mindex]) return 0;
+  char* arry = (char*)a;
+  if(compare(arry+(mindex-1)*esize,  arry+mindex*esize) < 0) return 0;
   int lsize, total_size;
   lsize = mindex-sindex;
   total_size = endIndex-sindex+1;
-  int bitonic_arry[total_size];
-  create_bitonic_seq_from(arry,total_size, lsize,sindex, bitonic_arry) ;
-  int lpos, rpos,value;
+  char  bitonic_arry[total_size*esize];
+  create_bitonic_seq_from(arry,esize,total_size, lsize,sindex, bitonic_arry) ;
+  int lpos, rpos;
   lpos =0;
   rpos = total_size-1;
   while(lpos <= rpos){
-    value = (bitonic_arry[lpos] <= bitonic_arry[rpos]) ? bitonic_arry[lpos++] :bitonic_arry[rpos--];
-    arry[sindex++] = value;
+    if(compare(bitonic_arry+lpos*esize, bitonic_arry+rpos*esize) < 1) {
+      memcpy(arry+sindex*esize, bitonic_arry+lpos*esize, esize);
+      lpos++;
+    }
+    else {
+      memcpy(arry+sindex*esize, bitonic_arry+rpos*esize, esize);
+      rpos--;
+    }
+    sindex++;
   }
   return 0;
+
+
 }
 
 /*
@@ -186,7 +197,7 @@ int optimized_merge_sort_bottom_up(int* arry, int size)
   
 }
 */			 
-int merge_sort_bottom_up(int* arry, int size)
+int merge_sort_bottom_up(void* arry, int size, size_t esize, compare_fn compare)
 {
   int start, mid, end, block_size =1;
   while(block_size < size) {
@@ -194,7 +205,7 @@ int merge_sort_bottom_up(int* arry, int size)
     while(start < size){
       mid = MIN(size-1,start+block_size);
       end = MIN(size-1,start+(block_size<<1)-1);
-      bitonic_merge(arry, start,mid,end);
+      bitonic_merge(arry, start,mid,end, esize, compare);
       start = end+1;
     }
     block_size <<= 1;

@@ -30,7 +30,6 @@ bool test_sort_small_input(int (*sort_function) (int* a, int size))
   sort_function(dup, size);
   ASSERT_ARRAY_EQUALS(exp, dup, sizeof(int)*size); 
   return true;
-  
 }
 
 void test_sort_input_mostly_duplicates(int (*sort_function)(int* a, int size))
@@ -107,10 +106,17 @@ static int _hybrid_qsort(int* a, int size)
 {
   return quick_sort(a, size, sizeof(int), compare_int);
 }
+
+static int _merge_sort_bottom_up(int* a, int size)
+{
+  return merge_sort_bottom_up(a, size, sizeof(int), compare_int);
+}
+
+
 void test_merge_sort_bottom_up()
 {
-  test_sort_small_input(merge_sort_bottom_up);
-  test_sort_large_input(merge_sort_bottom_up);
+  test_sort_small_input(_merge_sort_bottom_up);
+  test_sort_large_input(_merge_sort_bottom_up);
 }
 
 void test_binary_insertion_sort()
