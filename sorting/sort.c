@@ -149,13 +149,11 @@ int quick_sort(void* arry, int size, size_t esize, compare_fn compare)
   return ins_sort(arry, size, esize, compare);
 }
 
-static void create_bitonic_seq_from(void* arry, size_t esize, int total_size, int lsize, int start_index, 
-				    char buffer[])
+static void bitonic_seq_on(char buffer[], char* a, int sindex, int mindex, int endindex, size_t esize)
 {
-  int i;
-  start_index--;
-  for(i=0;i<lsize;i++) memcpy(buffer+i*esize, arry+(++start_index)*esize, esize); 
-  for(i=total_size-1;i>=lsize;i--) memcpy(buffer+i*esize,  arry+(++start_index)*esize, esize);   
+  int i,j;
+  for(i=sindex, j=0; i< mindex;i++, j++) memcpy(buffer+j*esize, a+i*esize, esize); 
+  for(i=endindex; i>=mindex;i--, j++) memcpy(buffer+j*esize, a+i*esize, esize); 
 }
 
 static int bitonic_merge(void* a, int sindex, int mindex, int endIndex, size_t esize, compare_fn compare) 
@@ -163,28 +161,22 @@ static int bitonic_merge(void* a, int sindex, int mindex, int endIndex, size_t e
   if(sindex >= endIndex) return 0;
   char* arry = (char*)a;
   if(compare(arry+(mindex-1)*esize,  arry+mindex*esize) < 0) return 0;
-  int lsize, total_size;
-  lsize = mindex-sindex;
-  total_size = endIndex-sindex+1;
-  char  bitonic_arry[total_size*esize];
-  create_bitonic_seq_from(arry,esize,total_size, lsize,sindex, bitonic_arry) ;
-  int lpos, rpos;
-  lpos =0;
-  rpos = total_size-1;
-  while(lpos <= rpos){
-    if(compare(bitonic_arry+lpos*esize, bitonic_arry+rpos*esize) < 1) {
-      memcpy(arry+sindex*esize, bitonic_arry+lpos*esize, esize);
+  int total_size = endIndex-sindex+1;
+  char  buffer[total_size*esize];
+  bitonic_seq_on(buffer, arry, sindex, mindex, endIndex, esize);
+    
+  int lpos, rpos = total_size-1;
+  for(lpos=0;sindex <= endIndex;sindex++) {
+    if(compare(buffer+lpos*esize, buffer+rpos*esize) < 1) {
+      memcpy(arry+sindex*esize, buffer+lpos*esize, esize);
       lpos++;
     }
     else {
-      memcpy(arry+sindex*esize, bitonic_arry+rpos*esize, esize);
+      memcpy(arry+sindex*esize, buffer+rpos*esize, esize);
       rpos--;
     }
-    sindex++;
   }
   return 0;
-
-
 }
 
 /*

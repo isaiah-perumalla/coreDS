@@ -41,7 +41,7 @@ void test_sort_input_mostly_duplicates(int (*sort_function)(int* a, int size))
 
 bool test_sort_large_input(int (*sort_function)(int* a, int size))
 {
-  int size = 5000;
+  int size = 50000;
   int arry[size], expected[size];
   int i,j;
   j =0;
@@ -148,10 +148,10 @@ void test_hybrid_quick_sort()
 int main()
 {
   RUN(test_merge_sort_bottom_up);
-  RUN(test_insertion_sort);
-  RUN(test_binary_insertion_sort);
-  RUN(test_basic_quick_sort);  
-  RUN(test_hybrid_quick_sort);  
+  //  RUN(test_insertion_sort);
+  //  RUN(test_binary_insertion_sort);
+  //  RUN(test_basic_quick_sort);  
+  //  RUN(test_hybrid_quick_sort);  
   //  RUN(test_binary_search_find_specified_element);
 
   return TEST_REPORT();
