@@ -179,16 +179,22 @@ static int bitonic_merge(void* a, int sindex, int mindex, int endIndex, size_t e
   return 0;
 }
 
-/*
-merge sort with optimizations
-switches to insertion sort for small, sub arrays
-worst case running time of insertion sort n(n-1)/2 -n 
-
-int optimized_merge_sort_bottom_up(int* arry, int size)
+int static td_merge_sort(void* arry, int sindex, int endindex, size_t esize, compare_fn compare)
 {
-  
+  if(endindex <= sindex) return 0;
+  int mid = sindex + ((endindex - sindex) >> 1);
+  //invariant mid >= sindex , endindex > mid, 
+  //for this reason sort seq{sindex ... mid}, seq{mid+1 ... endindex}
+  td_merge_sort(arry, sindex, mid, esize, compare);
+  td_merge_sort(arry, mid+1, endindex, esize, compare);
+  return bitonic_merge(arry, sindex, mid+1, endindex, esize, compare);
 }
-*/			 
+
+int merge_sort_top_down(void*  arry, int size, size_t esize, compare_fn compare)
+{
+  return td_merge_sort(arry, 0, size-1, esize, compare);
+}
+
 int merge_sort_bottom_up(void* arry, int size, size_t esize, compare_fn compare)
 {
   int start, mid, end, block_size =1;
