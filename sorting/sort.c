@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+
 #define MIN(A,B) ((A) < (B) ? (A):(B))
 #define SWAP(x,y, swap_size) do \
    { unsigned char swap_temp[swap_size]; \
@@ -11,7 +12,9 @@
      memcpy(x,swap_temp,swap_size); \
     } while(0)
 
+#define MID(a,b) a+ ((b - a) >> 1) 
 
+#define ELEMENT_AT(a, _charArray) (_charArray+a*esize)
 
 static void compare_n_swap(void* a, void* b, size_t esize, compare_fn compare)
 {
@@ -104,7 +107,7 @@ static int median_of_3_partition(void* arry, int start_index, int end_index, siz
 {
   char* start = (char*)arry;
   if(start_index >= end_index) return end_index;
-  int mid = start_index + ((end_index-start_index)>>1);
+  int mid = MID(start_index, end_index);
   compare_n_swap(start+start_index*esize, start+mid*esize, esize, compare);
   compare_n_swap(start+start_index*esize, start+end_index*esize, esize, compare);
   compare_n_swap(start+mid*esize, start+end_index*esize, esize, compare);
@@ -179,10 +182,45 @@ static int bitonic_merge(void* a, int sindex, int mindex, int endIndex, size_t e
   return 0;
 }
 
+void  merge(void* destArry, void* sourceArry, int sindex, int mid, int endindex, size_t esize, compare_fn compare)
+{
+  char* source = (char*)sourceArry;
+  char* dest = (char*) destArry;
+  int i, j, k;
+  int size = endindex+1;
+  for(k = sindex, i =sindex, j=mid+1; k < size; k++) {
+    if(i > mid) {
+      memcpy(ELEMENT_AT(k, dest), ELEMENT_AT(j,source), (endindex-j+1)*esize); 
+      break;
+    }
+    if(j > endindex) {
+      memcpy(ELEMENT_AT(k,dest), ELEMENT_AT(i,source), (mid-i+1)*esize); 
+      break;
+    }
+    if(compare(ELEMENT_AT(j, source), ELEMENT_AT(i, source)) < 0) {
+      memcpy(ELEMENT_AT(k, dest), ELEMENT_AT(j, source), esize);
+      j++;
+    }
+    else  {
+      memcpy(ELEMENT_AT(k, dest), ELEMENT_AT(i, source), esize);
+      i++;
+    }
+  }
+}
+
+int static opt_merge_sort(char* arry, char* aux, int sindex, int endindex, size_t esize,  compare_fn compare)
+{
+  if(endindex -sindex <= 0) return 1;
+  int mid = MID(sindex, endindex);
+  opt_merge_sort(aux, arry, sindex, mid, esize, compare);
+  opt_merge_sort(aux, arry, mid+1, endindex, esize, compare);
+  merge(arry, aux, sindex, mid, endindex, esize, compare);
+  return 1;
+}
 int static td_merge_sort(void* arry, int sindex, int endindex, size_t esize, compare_fn compare)
 {
   if(endindex <= sindex) return 0;
-  int mid = sindex + ((endindex - sindex) >> 1);
+  int mid = MID(sindex, endindex);
   //invariant mid >= sindex , endindex > mid, 
   //for this reason sort seq{sindex ... mid}, seq{mid+1 ... endindex}
   td_merge_sort(arry, sindex, mid, esize, compare);
@@ -211,6 +249,13 @@ int merge_sort_bottom_up(void* arry, int size, size_t esize, compare_fn compare)
   return 0;
 };
 
+int merge_sort_optimized(void* arry, int size, size_t esize, compare_fn compare)
+{
+  char aux[size*esize];
+  memcpy(aux, arry, esize*size);
+  return opt_merge_sort(arry, aux, 0, size-1, esize, compare);
+}
+
 int binary_search(const void* ele, void* arry, int size, size_t esize,
 		  compare_fn compare)
 {
@@ -219,7 +264,7 @@ int binary_search(const void* ele, void* arry, int size, size_t esize,
   hi = size-1;
   lo = 0;
   while(lo <= hi) {
-    int mid = lo + ((hi-lo)>>1);
+    int mid = MID(lo, hi);
     int cmp = compare(ele, start+mid*esize);
     if(cmp == 1) lo = mid+1;
     if(cmp == 0) return mid;

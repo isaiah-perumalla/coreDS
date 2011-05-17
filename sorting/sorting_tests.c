@@ -32,16 +32,19 @@ bool test_sort_small_input(int (*sort_function) (int* a, int size))
   return true;
 }
 
-void test_sort_input_mostly_duplicates(int (*sort_function)(int* a, int size))
+void test_basic_merge()
 {
+  int arry[] = {2,9,10,11, 3,7,15};
+  int expected[] = {2,9,3,7,10,11,15};
+  int output[] = {2,9,10,11, 3,7,15};
+  merge( output,arry, 2, 3,6, sizeof(int), compare_int);
+  ASSERT_ARRAY_EQUALS(expected, output, sizeof(int)*7); 
 
-
-  
 }
 
 bool test_sort_large_input(int (*sort_function)(int* a, int size))
 {
-  int size = 50000;
+  int size = 5000;
   int arry[size], expected[size];
   int i,j;
   j =0;
@@ -87,10 +90,16 @@ bool  test_binary_search_find_specified_element()
 }
 
 
+static int  _optimized_merge_sort(int* a, int size)
+{
+  return  merge_sort_optimized(a, size, sizeof(int), compare_int);
+}
+
 static int  _binary_insertion_sort(int* a, int size)
 {
   return binary_ins_sort(a, size, sizeof(int), compare_int);
 }
+
 
 static int  _insertion_sort(int* a, int size)
 {
@@ -115,6 +124,13 @@ static int _merge_sort_bottom_up(int* a, int size)
 static int _merge_sort_top_down(int* a, int size)
 {
   return merge_sort_top_down(a, size, sizeof(int), compare_int);
+}
+
+
+void test_merge_sort_optimized()
+{
+  test_sort_small_input(_optimized_merge_sort);
+  test_sort_large_input(_optimized_merge_sort);
 }
 
 
@@ -165,7 +181,8 @@ int main()
   RUN(test_binary_insertion_sort);
   RUN(test_basic_quick_sort);  
   RUN(test_hybrid_quick_sort);  
+  RUN(test_merge_sort_optimized);
+  RUN(test_basic_merge);
   //  RUN(test_binary_search_find_specified_element);
-
   return TEST_REPORT();
 }
