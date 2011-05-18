@@ -34,12 +34,15 @@ bool test_sort_small_input(int (*sort_function) (int* a, int size))
 
 void test_basic_merge()
 {
-  int arry[] = {2,9,10,11, 3,7,15};
-  int expected[] = {2,9,3,7,10,11,15};
-  int output[] = {2,9,10,11, 3,7,15};
-  merge( output,arry, 2, 3,6, sizeof(int), compare_int);
+  int arry[] = {8,9,10,11, 3,7,15};
+  int expected[] = {8,9,3,7,10,11,15};
+  int output[] = {8,9,10,11, 3,7,15};
+  merge(output,arry, 2, 3,6, sizeof(int), compare_int);
   ASSERT_ARRAY_EQUALS(expected, output, sizeof(int)*7); 
-
+  
+  int ordered_array[] = {3,7,8,9,10,11,15};
+  merge(output,expected, 0, 1,6, sizeof(int), compare_int);
+  ASSERT_ARRAY_EQUALS(ordered_array, output, sizeof(int)*7);
 }
 
 bool test_sort_large_input(int (*sort_function)(int* a, int size))

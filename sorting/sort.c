@@ -15,6 +15,7 @@
 #define MID(a,b) a+ ((b - a) >> 1) 
 
 #define ELEMENT_AT(a, _charArray) (_charArray+a*esize)
+#define COPY_TO(_dest_, _src_) memcpy((_dest_), (_src_), esize)
 
 static void compare_n_swap(void* a, void* b, size_t esize, compare_fn compare)
 {
@@ -145,8 +146,6 @@ int basic_quick_sort(void* arry, int size, size_t esize, compare_fn compare)
 }
 
 int quick_sort(void* arry, int size, size_t esize, compare_fn compare)
-
-
 {
   hybrid_q_sort(arry,0,size-1, esize, median_of_3_partition, compare);
   return ins_sort(arry, size, esize, compare);
@@ -198,15 +197,82 @@ void  merge(void* destArry, void* sourceArry, int sindex, int mid, int endindex,
       break;
     }
     if(compare(ELEMENT_AT(j, source), ELEMENT_AT(i, source)) < 0) {
-      memcpy(ELEMENT_AT(k, dest), ELEMENT_AT(j, source), esize);
+      COPY_TO(ELEMENT_AT(k,dest), ELEMENT_AT(j,source));
       j++;
     }
     else  {
-      memcpy(ELEMENT_AT(k, dest), ELEMENT_AT(i, source), esize);
+      COPY_TO(ELEMENT_AT(k,dest), ELEMENT_AT(i,source));
       i++;
     }
   }
 }
+
+
+void static merge_ascending(void* destArry, void* sourceArry, int sindex, int mid, int endindex, 
+			    size_t esize, compare_fn compare)
+{
+  char* dest = (char*)sourceArry;
+  char* source = (char*)destArry;
+  int i,j,k, size;
+
+  for(i=sindex, j=endindex, k=sindex; k <= endindex; k++) {
+    if(compare(ELEMENT_AT(j,source), ELEMENT_AT(i,source)) < 0) {
+      COPY_TO(ELEMENT_AT(j, source), ELEMENT_AT(k, dest));
+      j--;
+    }
+    else {
+      COPY_TO(ELEMENT_AT(i, source), ELEMENT_AT(k, dest));
+      i++;
+    }
+  }
+}
+
+
+
+void  static merge_descending(void* destArry, void* sourceArry, int sindex, int mid, int endindex, 
+			    size_t esize, compare_fn compare)
+{
+ char* dest = (char*)sourceArry;
+  char* source = (char*)destArry;
+  int i,j,k, size;
+
+  for(i=sindex, j=endindex, k=sindex; k <= endindex; k++) {
+    if(compare(ELEMENT_AT(j,source), ELEMENT_AT(i,source)) > 0) {
+      COPY_TO(ELEMENT_AT(j, source), ELEMENT_AT(k, dest));
+      j--;
+    }
+    else {
+      COPY_TO(ELEMENT_AT(i, source), ELEMENT_AT(k, dest));
+      i++;
+    }
+  }
+}
+
+
+int static merge_sort_ascending(char* arry, char* aux, int sindex, int endindex, size_t esize,  compare_fn compare);
+int static merge_sort_descending(char* arry, char* aux, int sindex, int endindex, size_t esize,  compare_fn compare);
+
+int static merge_sort_descending(char* arry, char* aux, int sindex, int endindex, size_t esize,  compare_fn compare)
+{
+  if(endindex <= sindex) return 1;
+  int mid = MID(sindex, endindex);
+  merge_sort_descending(aux, arry, sindex, mid, esize, compare);
+  merge_sort_ascending(aux, arry,  mid+1, endindex, esize, compare);
+  merge_descending(arry, aux, sindex, mid, endindex, esize, compare);
+  return 1;
+}
+
+int static merge_sort_ascending(char* arry, char* aux, int sindex, int endindex, size_t esize,  compare_fn compare)
+{
+  if(endindex -sindex <= 0) return 1;
+  int mid = MID(sindex, endindex);
+  merge_sort_ascending(aux, arry, sindex, mid, esize, compare);
+  merge_sort_descending(aux, arry, mid+1, endindex, esize, compare);
+  merge_ascending(arry, aux, sindex, mid, endindex, esize, compare);
+  return 1;
+  
+}
+
 
 int static opt_merge_sort(char* arry, char* aux, int sindex, int endindex, size_t esize,  compare_fn compare)
 {
@@ -254,6 +320,13 @@ int merge_sort_optimized(void* arry, int size, size_t esize, compare_fn compare)
   char aux[size*esize];
   memcpy(aux, arry, esize*size);
   return opt_merge_sort(arry, aux, 0, size-1, esize, compare);
+}
+
+int merge_sort_optimized_bitonic(void* arry, int size, size_t esize, compare_fn compare)
+{
+  char aux[size*esize];
+  memcpy(aux, arry, esize*size);
+  return merge_sort_ascending(arry, aux, 0, size-1, esize, compare);
 }
 
 int binary_search(const void* ele, void* arry, int size, size_t esize,
