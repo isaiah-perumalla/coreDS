@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <stdbool.h>
 
 #define MIN(A,B) ((A) < (B) ? (A):(B))
 #define SWAP(x,y, swap_size) do \
@@ -13,6 +14,8 @@
     } while(0)
 
 #define MID(a,b) a+ ((b - a) >> 1) 
+#define DESCENDING_ORDER false
+#define ASCENDING_ORDER true
 
 #define ELEMENT_AT(a, _charArray) (_charArray+a*esize)
 #define COPY_TO(_dest_, _src_) memcpy((_dest_), (_src_), esize)
@@ -208,41 +211,21 @@ void  merge(void* destArry, void* sourceArry, int sindex, int mid, int endindex,
 }
 
 
-void static merge_ascending(void* destArry, void* sourceArry, int sindex, int mid, int endindex, 
+void  merge_bitonic_seq(bool isAscending,void* destArry, void* sourceArry, int sindex, int endindex, 
 			    size_t esize, compare_fn compare)
 {
-  char* dest = (char*)sourceArry;
-  char* source = (char*)destArry;
-  int i,j,k, size;
-
+  char* dest = (char*)destArry;
+  char* source = (char*)sourceArry;
+  int i,j,k, comp_result;
+  comp_result = isAscending ? -1: 1;
+  
   for(i=sindex, j=endindex, k=sindex; k <= endindex; k++) {
-    if(compare(ELEMENT_AT(j,source), ELEMENT_AT(i,source)) < 0) {
-      COPY_TO(ELEMENT_AT(j, source), ELEMENT_AT(k, dest));
+    if(compare(ELEMENT_AT(j,source), ELEMENT_AT(i,source)) == comp_result) {
+      COPY_TO(ELEMENT_AT(k, dest), ELEMENT_AT(j, source));
       j--;
     }
     else {
-      COPY_TO(ELEMENT_AT(i, source), ELEMENT_AT(k, dest));
-      i++;
-    }
-  }
-}
-
-
-
-void  static merge_descending(void* destArry, void* sourceArry, int sindex, int mid, int endindex, 
-			    size_t esize, compare_fn compare)
-{
- char* dest = (char*)sourceArry;
-  char* source = (char*)destArry;
-  int i,j,k, size;
-
-  for(i=sindex, j=endindex, k=sindex; k <= endindex; k++) {
-    if(compare(ELEMENT_AT(j,source), ELEMENT_AT(i,source)) > 0) {
-      COPY_TO(ELEMENT_AT(j, source), ELEMENT_AT(k, dest));
-      j--;
-    }
-    else {
-      COPY_TO(ELEMENT_AT(i, source), ELEMENT_AT(k, dest));
+      COPY_TO(ELEMENT_AT(k, dest), ELEMENT_AT(i, source));
       i++;
     }
   }
@@ -258,7 +241,7 @@ int static merge_sort_descending(char* arry, char* aux, int sindex, int endindex
   int mid = MID(sindex, endindex);
   merge_sort_descending(aux, arry, sindex, mid, esize, compare);
   merge_sort_ascending(aux, arry,  mid+1, endindex, esize, compare);
-  merge_descending(arry, aux, sindex, mid, endindex, esize, compare);
+  merge_bitonic_seq(DESCENDING_ORDER,arry, aux, sindex, endindex, esize, compare);
   return 1;
 }
 
@@ -268,7 +251,7 @@ int static merge_sort_ascending(char* arry, char* aux, int sindex, int endindex,
   int mid = MID(sindex, endindex);
   merge_sort_ascending(aux, arry, sindex, mid, esize, compare);
   merge_sort_descending(aux, arry, mid+1, endindex, esize, compare);
-  merge_ascending(arry, aux, sindex, mid, endindex, esize, compare);
+  merge_bitonic_seq(ASCENDING_ORDER,arry, aux, sindex, endindex, esize, compare);
   return 1;
   
 }

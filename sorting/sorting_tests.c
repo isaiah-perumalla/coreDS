@@ -2,6 +2,17 @@
 #include "sort.h"
 #include "search.h"
 #include <stdlib.h>
+#include <stdbool.h>
+
+#define ASCENDING_ORDER true
+#define DESCENDING_ORDER false
+
+
+
+
+void  merge(void* dest, void* source, int sindex, int mid, int endindex, size_t esize, compare_fn compare);
+void  merge_ascending(void* destArry, void* sourceArry, int sindex, int endindex, 
+		      size_t esize, compare_fn compare);
 
 
 static int compare_int(const void* key1, const void* key2)
@@ -15,19 +26,19 @@ static int compare_int(const void* key1, const void* key2)
 }
 
 
-bool test_sort_small_input(int (*sort_function) (int* a, int size))
+bool test_sort_small_input(sort_fn sort_function)
 {
   int size = 5;
   int arry[] = {6,1,4,2,-1};
   int expected[]={-1,1,2,4,6};
   
-  sort_function(arry, size);
+  sort_function(arry, size, sizeof(int), compare_int);
 
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
   
   int dup[] = {4,1,1,1,1};
   int exp[] = {1,1,1,1,4};
-  sort_function(dup, size);
+  sort_function(dup, size, sizeof(int), compare_int);
   ASSERT_ARRAY_EQUALS(exp, dup, sizeof(int)*size); 
   return true;
 }
@@ -45,7 +56,25 @@ void test_basic_merge()
   ASSERT_ARRAY_EQUALS(ordered_array, output, sizeof(int)*7);
 }
 
-bool test_sort_large_input(int (*sort_function)(int* a, int size))
+void test_ascending_and_descending_merge()
+{
+  int bitonic_seq[] = {8,9,15,17, 16, 12, 4};
+  int expected_ascending[] = {4,8,9,12,15,16,17};
+  int expected_descending[] = {17,16,15,12,9,8,4};
+  int output[7];
+  
+  merge_bitonic_seq(ASCENDING_ORDER,output, bitonic_seq, 0, 6, sizeof(int), compare_int);
+  ASSERT_ARRAY_EQUALS(expected_ascending, output, sizeof(int)*7);
+  
+  int desc_bitonic_seq[] = {17,15,9,8, 4,12,16};
+  
+  merge_bitonic_seq(DESCENDING_ORDER,output, desc_bitonic_seq, 0, 6, sizeof(int), compare_int);
+  ASSERT_ARRAY_EQUALS(expected_descending, output, sizeof(int)*7);
+  
+}
+
+
+bool test_sort_large_input(sort_fn sort_function)
 {
   int size = 5000;
   int arry[size], expected[size];
@@ -55,7 +84,7 @@ bool test_sort_large_input(int (*sort_function)(int* a, int size))
     arry[j++] = i;
   }
   for(i=0;i<size;i++)expected[i] =i;
-  sort_function(arry, size);
+  sort_function(arry, size, sizeof(int), compare_int);
   ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
   return true;
 }
@@ -92,87 +121,49 @@ bool  test_binary_search_find_specified_element()
   return true;
 }
 
-
-static int  _optimized_merge_sort(int* a, int size)
-{
-  return  merge_sort_optimized(a, size, sizeof(int), compare_int);
-}
-
-static int  _binary_insertion_sort(int* a, int size)
-{
-  return binary_ins_sort(a, size, sizeof(int), compare_int);
-}
-
-
-static int  _insertion_sort(int* a, int size)
-{
-  return ins_sort(a, size, sizeof(int), compare_int);
-}
-
-static int _basic_quick_sort(int* a, int size)
-{
-  return basic_quick_sort(a, size, sizeof(int), compare_int);
-}
-
-static int _hybrid_qsort(int* a, int size)
-{
-  return quick_sort(a, size, sizeof(int), compare_int);
-}
-
-static int _merge_sort_bottom_up(int* a, int size)
-{
-  return merge_sort_bottom_up(a, size, sizeof(int), compare_int);
-}
-
-static int _merge_sort_top_down(int* a, int size)
-{
-  return merge_sort_top_down(a, size, sizeof(int), compare_int);
-}
-
-
 void test_merge_sort_optimized()
 {
-  test_sort_small_input(_optimized_merge_sort);
-  test_sort_large_input(_optimized_merge_sort);
+  test_sort_small_input(merge_sort_optimized);
+  test_sort_large_input(merge_sort_optimized);
 }
 
 
 void test_merge_sort_bottom_up()
 {
-  test_sort_small_input(_merge_sort_bottom_up);
-  test_sort_large_input(_merge_sort_bottom_up);
+  test_sort_small_input(merge_sort_bottom_up);
+  test_sort_large_input(merge_sort_bottom_up);
 }
 
 
 void test_merge_sort_top_down()
 {
-  test_sort_small_input(_merge_sort_top_down);
-  test_sort_large_input(_merge_sort_top_down);
+  test_sort_small_input(merge_sort_top_down);
+  test_sort_large_input(merge_sort_top_down);
 }
 
 void test_binary_insertion_sort()
 {
-  if(!test_sort_small_input(_binary_insertion_sort)) return;
-  test_sort_large_input(_binary_insertion_sort);
+  if(!test_sort_small_input(binary_ins_sort)) return;
+  test_sort_large_input(binary_ins_sort);
 }
   
 void test_insertion_sort()
 {
-  test_sort_small_input(_insertion_sort);
-  test_sort_large_input(_insertion_sort);
+  test_sort_small_input(ins_sort);
+  test_sort_large_input(ins_sort);
 }
 
 
 void test_basic_quick_sort()
 {
-  test_sort_small_input(_basic_quick_sort);
-  test_sort_large_input(_basic_quick_sort);
+  test_sort_small_input(basic_quick_sort);
+  test_sort_large_input(basic_quick_sort);
 }
 
 void test_hybrid_quick_sort()
 {
-  test_sort_small_input(_hybrid_qsort);
-  test_sort_large_input(_hybrid_qsort);
+  test_sort_small_input(merge_sort_optimized);
+  test_sort_large_input(merge_sort_optimized);
 }
 
 /* test runner */
@@ -186,6 +177,7 @@ int main()
   RUN(test_hybrid_quick_sort);  
   RUN(test_merge_sort_optimized);
   RUN(test_basic_merge);
+  RUN(test_ascending_and_descending_merge);
   //  RUN(test_binary_search_find_specified_element);
   return TEST_REPORT();
 }

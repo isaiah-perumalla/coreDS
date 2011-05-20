@@ -1,6 +1,8 @@
 #include<stdlib.h>
 
 typedef int (*compare_fn)(const void* key1, const void* key2);
+typedef int (*sort_fn)(void* a, int size, size_t esize, compare_fn compare);
+
 int ins_sort(void* a, int size, size_t esize, compare_fn compare);
 
 int binary_ins_sort(void* a, int size, size_t esize, compare_fn compare);
