@@ -323,7 +323,7 @@ int binary_search(const void* ele, void* arry, int size, size_t esize,
     int mid = MID(lo, hi);
     int cmp = compare(ele, start+mid*esize);
     if(cmp == 1) lo = mid+1;
-    if(cmp == 0) return mid;
+    else if(cmp == 0) return mid;
     else hi = mid-1;
   }
 return -1*(lo+1);

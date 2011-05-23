@@ -8,12 +8,13 @@
 #define DESCENDING_ORDER false
 
 
-
+#define FAIL_UNLESS_ARRAY_EQUALS(expected, actual, length) if(!memcmp(expected, actual, length)) return false
 
 void  merge(void* dest, void* source, int sindex, int mid, int endindex, size_t esize, compare_fn compare);
 void  merge_ascending(void* destArry, void* sourceArry, int sindex, int endindex, 
 		      size_t esize, compare_fn compare);
-
+void  merge_bitonic_seq(bool isAscending,void* destArry, void* sourceArry, int sindex, int endindex, 
+			size_t esize, compare_fn compare);
 
 static int compare_int(const void* key1, const void* key2)
 {
@@ -34,12 +35,12 @@ bool test_sort_small_input(sort_fn sort_function)
   
   sort_function(arry, size, sizeof(int), compare_int);
 
-  ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
+  FAIL_UNLESS_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
   
   int dup[] = {4,1,1,1,1};
   int exp[] = {1,1,1,1,4};
   sort_function(dup, size, sizeof(int), compare_int);
-  ASSERT_ARRAY_EQUALS(exp, dup, sizeof(int)*size); 
+  FAIL_UNLESS_ARRAY_EQUALS(exp, dup, sizeof(int)*size); 
   return true;
 }
 
@@ -50,10 +51,10 @@ void test_basic_merge()
   int output[] = {8,9,10,11, 3,7,15};
   merge(output,arry, 2, 3,6, sizeof(int), compare_int);
   ASSERT_ARRAY_EQUALS(expected, output, sizeof(int)*7); 
-  
+
   int ordered_array[] = {3,7,8,9,10,11,15};
   merge(output,expected, 0, 1,6, sizeof(int), compare_int);
-  ASSERT_ARRAY_EQUALS(ordered_array, output, sizeof(int)*7);
+  ASSERT_ARRAY_EQUALS(ordered_array, output, sizeof(int)*7); 
 }
 
 void test_ascending_and_descending_merge()
@@ -85,11 +86,11 @@ bool test_sort_large_input(sort_fn sort_function)
   }
   for(i=0;i<size;i++)expected[i] =i;
   sort_function(arry, size, sizeof(int), compare_int);
-  ASSERT_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
+  FAIL_UNLESS_ARRAY_EQUALS(expected, arry, sizeof(int)*size); 
   return true;
 }
 
-bool test_binary_search_element_not_found()
+void test_binary_search_element_not_found()
 {
   int size = 10;
   int arry[] = {10,12,80,90,100,101,101,101,102,102};
@@ -105,10 +106,9 @@ bool test_binary_search_element_not_found()
   target=2;
   int index = ~binary_search(&target,a,3, esize, compare_int);
   ASSERT_EQUALS(index, 1);
-  return true;
 }
 
-bool  test_binary_search_find_specified_element()
+void  test_binary_search_find_specified_element()
 {
   int size = 10;
   int arry[] = {10,12,80,90,100,101,101,101,102,102};
@@ -118,7 +118,7 @@ bool  test_binary_search_find_specified_element()
   ASSERT_EQUALS(index, 1);  
   index = binary_search(&arry[5], arry,size, esize, compare_int);
   ASSERT_EQUALS(arry[index], 101);      
-  return true;
+  
 }
 
 void test_merge_sort_optimized()
@@ -178,6 +178,6 @@ int main()
   RUN(test_merge_sort_optimized);
   RUN(test_basic_merge);
   RUN(test_ascending_and_descending_merge);
-  //  RUN(test_binary_search_find_specified_element);
+  RUN(test_binary_search_find_specified_element);
   return TEST_REPORT();
 }
