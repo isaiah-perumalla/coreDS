@@ -8,7 +8,13 @@
 #define DESCENDING_ORDER false
 
 
-#define FAIL_UNLESS_ARRAY_EQUALS(expected, actual, length) if(!memcmp(expected, actual, length)) return false
+#define FAIL_UNLESS_ARRAY_EQUALS(expected, actual, length) if(memcmp(expected, actual, length) != 0) return false
+
+#define TEST_SORTING(_sort_fn)  do \
+    {   ASSERT((#_sort_fn),test_sort_small_input(merge_sort_optimized));\
+        ASSERT((#_sort_fn),test_sort_large_input(merge_sort_optimized));\
+    } while(0)
+ 
 
 void  merge(void* dest, void* source, int sindex, int mid, int endindex, size_t esize, compare_fn compare);
 void  merge_ascending(void* destArry, void* sourceArry, int sindex, int endindex, 
@@ -123,8 +129,7 @@ void  test_binary_search_find_specified_element()
 
 void test_merge_sort_optimized()
 {
-  test_sort_small_input(merge_sort_optimized);
-  test_sort_large_input(merge_sort_optimized);
+  TEST_SORTING(merge_sort_optimized);
 }
 
 
