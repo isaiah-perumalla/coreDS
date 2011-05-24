@@ -11,8 +11,8 @@
 #define FAIL_UNLESS_ARRAY_EQUALS(expected, actual, length) if(memcmp(expected, actual, length) != 0) return false
 
 #define TEST_SORTING(_sort_fn)  do \
-    {   ASSERT((#_sort_fn),test_sort_small_input(merge_sort_optimized));\
-        ASSERT((#_sort_fn),test_sort_large_input(merge_sort_optimized));\
+    {   ASSERT((#_sort_fn),test_sort_small_input(_sort_fn));\
+        ASSERT((#_sort_fn),test_sort_large_input(_sort_fn));\
     } while(0)
  
 
@@ -135,40 +135,34 @@ void test_merge_sort_optimized()
 
 void test_merge_sort_bottom_up()
 {
-  test_sort_small_input(merge_sort_bottom_up);
-  test_sort_large_input(merge_sort_bottom_up);
+  TEST_SORTING(merge_sort_bottom_up);
 }
 
 
 void test_merge_sort_top_down()
 {
-  test_sort_small_input(merge_sort_top_down);
-  test_sort_large_input(merge_sort_top_down);
+  TEST_SORTING(merge_sort_top_down);
 }
 
 void test_binary_insertion_sort()
 {
-  if(!test_sort_small_input(binary_ins_sort)) return;
-  test_sort_large_input(binary_ins_sort);
+  TEST_SORTING(binary_ins_sort);
 }
   
 void test_insertion_sort()
 {
-  test_sort_small_input(ins_sort);
-  test_sort_large_input(ins_sort);
+  TEST_SORTING(ins_sort);
 }
 
 
 void test_basic_quick_sort()
 {
-  test_sort_small_input(basic_quick_sort);
-  test_sort_large_input(basic_quick_sort);
+  TEST_SORTING(basic_quick_sort);
 }
 
 void test_hybrid_quick_sort()
 {
-  test_sort_small_input(merge_sort_optimized);
-  test_sort_large_input(merge_sort_optimized);
+  TEST_SORTING(merge_sort_optimized);
 }
 
 /* test runner */
