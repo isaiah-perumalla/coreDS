@@ -165,6 +165,13 @@ void test_hybrid_quick_sort()
   TEST_SORTING(merge_sort_optimized);
 }
 
+void test_merge_sort_bitonic_no_copy()
+{
+  TEST_SORTING(merge_sort_optimized_bitonic);
+}
+
+
+
 /* test runner */
 int main()
 {
@@ -178,5 +185,6 @@ int main()
   RUN(test_basic_merge);
   RUN(test_ascending_and_descending_merge);
   RUN(test_binary_search_find_specified_element);
+  RUN(test_merge_sort_bitonic_no_copy);
   return TEST_REPORT();
 }
