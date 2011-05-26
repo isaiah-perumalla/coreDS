@@ -7,4 +7,4 @@ Stack_T Stack_new();
 bool Stack_isEmpty(Stack_T stk);
 void Stack_push(void* val, Stack_T stk);
 void* Stack_pop(Stack_T stk);
-
+void Stack_free(Stack_T *stk);

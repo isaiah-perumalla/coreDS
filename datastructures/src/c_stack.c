@@ -44,6 +44,21 @@ void* Stack_pop(Stack_T stack)
     val = head->value;
     stack->head = head->next;
     FREE(head);
+    stack->count--;
   }
   return val;
 }
+
+void Stack_free(Stack_T *stack)
+{
+  struct Stack_Node *current_node = (*stack)->head;
+  while(current_node) {
+    struct Stack_Node* next = current_node->next;
+    FREE(current_node);
+    current_node = next;
+  }
+  FREE((*stack));
+  *stack = NULL;
+}
+   
+
