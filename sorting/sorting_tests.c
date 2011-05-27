@@ -1,6 +1,7 @@
 #include "tinytest.h"
 #include "sort.h"
 #include "search.h"
+#include "stack.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -35,6 +36,8 @@ static int compare_int(const void* key1, const void* key2)
 
 bool test_sort_small_input(sort_fn sort_function)
 {
+  Stack_T stack = Stack_new();
+  Stack_dispose(&stack);
   int size = 5;
   int arry[] = {6,1,4,2,-1};
   int expected[]={-1,1,2,4,6};

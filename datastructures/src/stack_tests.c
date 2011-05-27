@@ -1,6 +1,6 @@
 #include "tinytest.h"
 #include <stdlib.h>
-#include "c_stack.h"
+#include "stack.h"
 
 
 void test_push_pop_from_stack()

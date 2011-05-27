@@ -1,10 +1,10 @@
-CFLAGS = -O0 -g -Wall -I../tinytest  -pg
-
+CFLAGS = -O0 -g -Wall -I../tinytest -I../datastructures/src  -pg
+VPATH = src:../datastructures/src
 .PHONY: clean test
 
-all:sort.o  sorting_tests
+all: stack.o sort.o  sorting_tests
 
-sorting_tests: sort.o 
+sorting_tests: stack.o sort.o  
 
 test: sorting_tests
 	./sorting_tests
