@@ -1,5 +1,5 @@
 CFLAGS = -O0 -g -Wall -I../tinytest -I../datastructures/include  -pg
-VPATH = src:../datastructures/src
+VPATH = ../datastructures/src
 DATAOBJS := stack.o
 .PHONY: clean test
 
