@@ -1,10 +1,11 @@
 CFLAGS = -O0 -g -Wall -I../tinytest -I../datastructures/include  -pg
 VPATH = src:../datastructures/src
+DATAOBJS := stack.o
 .PHONY: clean test
 
-all: stack.o sort.o  sorting_tests
+all: $(DATAOBJS) sort.o  sorting_tests
 
-sorting_tests: stack.o sort.o  
+sorting_tests: $(DATAOBJS) sort.o  
 
 test: sorting_tests
 	./sorting_tests
