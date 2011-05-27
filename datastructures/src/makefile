@@ -1,4 +1,4 @@
-CFLAGS = -O0 -g -Wall -I../../tinytest   -pg
+CFLAGS = -O0 -g -Wall -I../../tinytest -I../include   -pg
 
 .PHONY: clean test
 

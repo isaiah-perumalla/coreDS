@@ -1,4 +1,4 @@
-CFLAGS = -O0 -g -Wall -I../tinytest -I../datastructures/src  -pg
+CFLAGS = -O0 -g -Wall -I../tinytest -I../datastructures/include  -pg
 VPATH = src:../datastructures/src
 .PHONY: clean test
 
