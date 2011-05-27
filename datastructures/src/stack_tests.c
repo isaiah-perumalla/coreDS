@@ -20,7 +20,7 @@ void test_push_pop_from_stack()
   ASSERT_EQUALS(&x1, poped_value);
   ASSERT("stack should be empty when all elements popped", Stack_isEmpty(stack));
 
-  Stack_free(&stack);
+  Stack_dispose(&stack);
   ASSERT_EQUALS(NULL, stack);
 }
 

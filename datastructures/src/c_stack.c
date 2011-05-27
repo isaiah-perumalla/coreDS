@@ -4,7 +4,8 @@
 
 #define NEW(p) p = malloc(sizeof(*(p)))
 
-#define FREE(p) free(p);
+#define FREE(p) free(p), p = NULL
+
 struct Stack_T {
   int count;
   struct Stack_Node {
@@ -49,7 +50,7 @@ void* Stack_pop(Stack_T stack)
   return val;
 }
 
-void Stack_free(Stack_T *stack)
+void Stack_dispose(Stack_T *stack)
 {
   struct Stack_Node *current_node = (*stack)->head;
   while(current_node) {
