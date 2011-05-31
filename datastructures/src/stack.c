@@ -17,7 +17,8 @@ struct Stack_T {
 
 Stack_T Stack_new()
 {
-  Stack_T stk = (Stack_T)malloc(sizeof (*stk));
+  Stack_T stk;
+  NEW(stk);
   stk->count = 0;
   return stk;
 }
