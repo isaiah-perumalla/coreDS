@@ -1,10 +1,7 @@
 #include "stack.h"
 #include <stdlib.h>
 #include <stdbool.h>
-
-#define NEW(p) p = malloc(sizeof(*(p)))
-
-#define FREE(p) free(p), p = NULL
+#include "mem.h"
 
 struct Stack_T {
   int count;
