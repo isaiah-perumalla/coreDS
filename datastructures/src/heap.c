@@ -41,7 +41,6 @@ static void heapify_down(Heap_T heap, int index)
     SWAP(&heap->array[i], &heap->array[top_index], sizeof(void*));
     i = top_index;
   }
-    
 }
 
 Heap_T Heap_new(int size, heap_type type, compare_fn compare)
@@ -56,6 +55,11 @@ Heap_T Heap_new(int size, heap_type type, compare_fn compare)
   return heap;
 }
 
+void Heap_dispose(Heap_T *heap_ptr)
+{
+  FREE((*heap_ptr)->array);
+  FREE(*heap_ptr);
+}
 void Heap_insert(void* val, Heap_T heap)
 {
   assert(heap->index < heap->size );

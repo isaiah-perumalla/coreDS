@@ -38,7 +38,7 @@ void test_push_pop_from_stack()
 }
 
 
-void test_insert_remove_from_heap()
+void test_insert_remove_from_max_heap()
 {
   int size =10;
   Heap_T heap = Heap_new(size, MAX_HEAP, compare_int);
@@ -57,12 +57,33 @@ void test_insert_remove_from_heap()
 
   value = (int*)Heap_remove(heap);
   ASSERT_EQUALS(&x3, value);
+  Heap_dispose(&heap);
   
+}
+
+void test_insert_remove_from_min_heap()
+{
+  int size = 1000;
+  int arry[size];
+  int expected_arry[size];
+  Heap_T heap = Heap_new(size, MIN_HEAP, compare_int);
+  int i,j =0;
+  for(i=size-1; i >=0; i--) {
+    arry[j] = i;
+    expected_arry[i] = i;
+    Heap_insert(&arry[j++], heap);
+  }
+  for(i=0; i<size; i++) {
+    int* val = (int*)Heap_remove(heap);
+    ASSERT_EQUALS(expected_arry[i], *val);
+  }
+  Heap_dispose(&heap);
 }
 
 int main()
 {
   RUN(test_push_pop_from_stack);
-  RUN(test_insert_remove_from_heap);
+  RUN(test_insert_remove_from_max_heap);
+  RUN(test_insert_remove_from_min_heap);
   return TEST_REPORT();
 }
