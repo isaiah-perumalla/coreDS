@@ -27,7 +27,7 @@ void  merge_ascending(void* destArry, void* sourceArry, int sindex, int endindex
 void  merge_bitonic_seq(bool isAscending,void* destArry, void* sourceArry, int sindex, int endindex, 
 			size_t esize, compare_fn compare);
 
-static int compare_int(const void* key1, const void* key2)
+static inline int compare_int(const void* key1, const void* key2)
 {
   int a, b;
   a = *(const int*) key1;

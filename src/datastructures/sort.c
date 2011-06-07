@@ -21,7 +21,7 @@
 #define ELEMENT_AT(a, _charArray) (_charArray+a*esize)
 #define COPY_TO(_dest_, _src_) memcpy((_dest_), (_src_), esize)
 
-static void compare_n_swap(void* a, void* b, size_t esize, compare_fn compare)
+static inline void compare_n_swap(void* a, void* b, size_t esize, compare_fn compare)
 {
   if(compare(a, b) > 0) {
     SWAP(a, b, esize);
