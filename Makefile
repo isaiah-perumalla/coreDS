@@ -21,6 +21,9 @@ GTEST_DIR = gtest-1.6.0
 # Where to find user code.
 USER_DIR = src
 TEST_DIR = tests
+DATASTRUCTURES = $(USER_DIR)/datastructures/*.c
+OUT_DIR = ./
+
 # Flags passed to the preprocessor.
 CPPFLAGS += -I$(GTEST_DIR)/include
 
@@ -31,15 +34,16 @@ CXXFLAGS += -g -Wall -Wextra
 # created to the list.
 TESTS = all_unittests
 
-OBJS = stack.o heap.o
-TEST_OBJS = stack_tests.o
-
+OBJS = stack.o heap.o sort.o
+TEST_OBJS = stack_tests.o sorting_tests.o
+OUT_OBJS=$(addprefix $(OUT_DIR)/, $(OBJS))
+OUT_TEST_OBJS=$(addprefix $(OUT_DIR)/, $(TEST_OBJS))
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 
-INCLUDES = -I$(USER_DIR)/datastructures/include
+INCLUDES = -I$(USER_DIR)/datastructures/include 
 
 #LIBS = -L/usr/locacl/lib -lm
 # House-keeping build targets.
@@ -77,13 +81,13 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-$(OBJS) : $(USER_DIR)/datastructures/*.c  $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c $(USER_DIR)/datastructures/*.c
+$(OUT_OBJS)%.o : $(DATASTRUCTURES)  $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c  $(DATASTRUCTURES)  
 
-$(TEST_OBJS) : $(GTEST_HEADERS) $(OBJS) $(TEST_DIR)/*.c
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c $(TEST_DIR)/stack_tests.c
+$(OUT_TEST_OBJS)%.o : $(GTEST_HEADERS) $(OUT_OBJS) $(TEST_DIR)/*.c
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c $(TEST_DIR)/*.c  
 
-all_unittests : $(OBJS) $(TEST_OBJS) gtest_main.a
+all_unittests : $(OUT_OBJS) $(OUT_TEST_OBJS) gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 test: all_unittests

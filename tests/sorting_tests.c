@@ -1,19 +1,23 @@
-#include "tinytest.h"
+#include "gtest/gtest.h"
 #include "sort.h"
 #include "search.h"
 #include "stack.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
+
+/* originally written in ansi C, so there are more than usual number of macros*/
 #define ASCENDING_ORDER true
 #define DESCENDING_ORDER false
 
 
 #define FAIL_UNLESS_ARRAY_EQUALS(expected, actual, length) if(memcmp(expected, actual, length) != 0) return false
+#define ASSERT_ARRAY_EQUALS(expected, actual, size) ASSERT_TRUE( memcmp((expected),(actual), (size)) == 0)
 
 #define TEST_SORTING(_sort_fn)  do \
-    {   ASSERT((#_sort_fn),test_sort_small_input(_sort_fn));\
-        ASSERT((#_sort_fn),test_sort_large_input(_sort_fn));\
+    {   EXPECT_TRUE(test_sort_small_input(_sort_fn));\
+        EXPECT_TRUE(test_sort_large_input(_sort_fn));\
     } while(0)
  
 
@@ -53,7 +57,7 @@ bool test_sort_small_input(sort_fn sort_function)
   return true;
 }
 
-void test_basic_merge()
+TEST(SortingTest, BasicMerge)
 {
   int arry[] = {8,9,10,11, 3,7,15};
   int expected[] = {8,9,3,7,10,11,15};
@@ -66,7 +70,7 @@ void test_basic_merge()
   ASSERT_ARRAY_EQUALS(ordered_array, output, sizeof(int)*7); 
 }
 
-void test_ascending_and_descending_merge()
+TEST(SortingTest, AscendingAndDescendingMerge)
 {
   int bitonic_seq[] = {8,9,15,17, 16, 12, 4};
   int expected_ascending[] = {4,8,9,12,15,16,17};
@@ -99,84 +103,83 @@ bool test_sort_large_input(sort_fn sort_function)
   return true;
 }
 
-void test_binary_search_element_not_found()
+TEST(BinarySearchTest, ElementNotFound)
 {
   int size = 10;
   int arry[] = {10,12,80,90,100,101,101,101,102,102};
   int target  =103;
   size_t esize = sizeof(target);
    
-  ASSERT_EQUALS(~binary_search(&target, arry,size, esize,compare_int ), 10);
+  ASSERT_EQ(~binary_search(&target, arry,size, esize,compare_int ), 10);
   target=1;
-  ASSERT_EQUALS(~binary_search(&target, arry,size, esize, compare_int), 0);  
+  ASSERT_EQ(~binary_search(&target, arry,size, esize, compare_int), 0);  
   target= 11;
-  ASSERT_EQUALS(~binary_search(&target, arry,size, esize, compare_int), 1);  
+  ASSERT_EQ(~binary_search(&target, arry,size, esize, compare_int), 1);  
   int a[]={1,4,6};
   target=2;
   int index = ~binary_search(&target,a,3, esize, compare_int);
-  ASSERT_EQUALS(index, 1);
+  ASSERT_EQ(index, 1);
 }
 
-void  test_binary_search_find_specified_element()
+TEST(BinarySearchTest, FindSpecifiedElement)
 {
   int size = 10;
   int arry[] = {10,12,80,90,100,101,101,101,102,102};
   size_t esize = sizeof(int);
-  ASSERT_EQUALS(binary_search(&arry[3], arry,size, esize, compare_int), 3);
+  ASSERT_EQ(binary_search(&arry[3], arry,size, esize, compare_int), 3);
   int index = binary_search(&arry[1], arry,size, esize, compare_int);
-  ASSERT_EQUALS(index, 1);  
+  ASSERT_EQ(index, 1);  
   index = binary_search(&arry[5], arry,size, esize, compare_int);
-  ASSERT_EQUALS(arry[index], 101);      
+  ASSERT_EQ(arry[index], 101);      
   
 }
 
-void test_merge_sort_optimized()
+TEST(SortingTest, MergeSortOptimized)
 {
   TEST_SORTING(merge_sort_optimized);
 }
 
 
-void test_merge_sort_bottom_up()
+TEST(SortingTest, MergeSortBottomUp)
 {
   TEST_SORTING(merge_sort_bottom_up);
 }
 
 
-void test_merge_sort_top_down()
+TEST(SortingTest,MergeSortTopDown)
 {
   TEST_SORTING(merge_sort_top_down);
 }
 
-void test_binary_insertion_sort()
+TEST(SortingTest,BinaryInsertionSort)
 {
   TEST_SORTING(binary_ins_sort);
 }
   
-void test_insertion_sort()
+TEST(SortingTest,InsertionSort)
 {
   TEST_SORTING(ins_sort);
 }
 
 
-void test_basic_quick_sort()
+TEST(SortingTest,BasicQuickSort)
 {
   TEST_SORTING(basic_quick_sort);
 }
 
-void test_hybrid_quick_sort()
+TEST(SortingTest,HybridQuickSort)
 {
   TEST_SORTING(merge_sort_optimized);
 }
 
-void test_merge_sort_bitonic_no_copy()
+TEST(SortingTest,MergeSortBitonicNoCopy)
 {
   TEST_SORTING(merge_sort_optimized_bitonic);
 }
 
 
-
 /* test runner */
-int main()
+/*int main()
 {
   RUN(test_merge_sort_bottom_up);
   RUN(test_merge_sort_top_down);
@@ -191,3 +194,4 @@ int main()
   RUN(test_merge_sort_bitonic_no_copy);
   return TEST_REPORT();
 }
+*/

@@ -303,14 +303,14 @@ int merge_sort_optimized(void* arry, int size, size_t esize, compare_fn compare)
 {
   char aux[size*esize];
   memcpy(aux, arry, esize*size);
-  return opt_merge_sort(arry, aux, 0, size-1, esize, compare);
+  return opt_merge_sort((char*)arry, aux, 0, size-1, esize, compare);
 }
 
 int merge_sort_optimized_bitonic(void* arry, int size, size_t esize, compare_fn compare)
 {
   char aux[size*esize];
   memcpy(aux, arry, esize*size);
-  return merge_sort_ascending(arry, aux, 0, size-1, esize, compare);
+  return merge_sort_ascending((char*)arry, aux, 0, size-1, esize, compare);
 }
 
 int binary_search(const void* ele, void* arry, int size, size_t esize,

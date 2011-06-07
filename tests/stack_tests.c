@@ -36,9 +36,9 @@ TEST(StackTest, PushPop) {
 }
 
 
-/*
-void test_insert_remove_from_max_heap()
-{
+
+TEST(HeapTest, InsertRemove) {
+
   int size =10;
   Heap_T heap = Heap_new(size, MAX_HEAP, compare_int);
   int x1,x2, x3;
@@ -60,17 +60,8 @@ void test_insert_remove_from_max_heap()
   
 }
 
-void test_build_heap()
-{
-  int size =1000;
-  int arry[size];
-  int j=0;
-  for(i=size-1; i >=0; i--) {
-    arry[j] = i;
-  }
-}
 
-void test_insert_remove_from_min_heap()
+TEST(HeapTest, InsertRemoveLargeInput)
 {
   int size = 1000;
   int arry[size];
@@ -88,4 +79,14 @@ void test_insert_remove_from_min_heap()
   }
   Heap_dispose(&heap);
 }
+
+/*void test_build_heap()
+{
+  int size =1000;
+  int arry[size];
+  int j=0;
+  for(i=size-1; i >=0; i--) {
+    arry[j] = i;
+    }
+
 */
