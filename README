@@ -1,0 +1,3 @@
+Various algorithms and Data sructures implemented in C and C++
+to build and run unit test
+$ make test
