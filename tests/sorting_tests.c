@@ -131,7 +131,7 @@ TEST(BinarySearchTest, FindSpecifiedElement)
   ASSERT_EQ(index, 1);  
   index = binary_search(&arry[5], arry,size, esize, compare_int);
   ASSERT_EQ(arry[index], 101);      
-  
+
 }
 
 TEST(SortingTest, MergeSortOptimized)

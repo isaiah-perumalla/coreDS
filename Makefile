@@ -21,7 +21,8 @@ GTEST_DIR = gtest-1.6.0
 # Where to find user code.
 USER_DIR = src
 TEST_DIR = tests
-DATASTRUCTURES = $(USER_DIR)/datastructures/*.c
+DATASTRUCTURES = $(USER_DIR)/datastructures/*.c $(USER_DIR)/datastructures/include/*.h 
+TEST_SRC = $(TEST_DIR)/*.c $(TEST_DIR)/*.cc
 OUT_DIR = ./
 
 # Flags passed to the preprocessor.
@@ -35,7 +36,7 @@ CXXFLAGS += -g -Wall -Wextra
 TESTS = all_unittests
 
 OBJS = stack.o heap.o sort.o
-TEST_OBJS = stack_tests.o sorting_tests.o
+TEST_OBJS = stack_tests.o sorting_tests.o binaryheap_test.o
 OUT_OBJS=$(addprefix $(OUT_DIR)/, $(OBJS))
 OUT_TEST_OBJS=$(addprefix $(OUT_DIR)/, $(TEST_OBJS))
 # All Google Test headers.  Usually you shouldn't change this
@@ -84,8 +85,8 @@ gtest_main.a : gtest-all.o gtest_main.o
 $(OUT_OBJS)%.o : $(DATASTRUCTURES)  $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c  $(DATASTRUCTURES)  
 
-$(OUT_TEST_OBJS)%.o : $(GTEST_HEADERS) $(OUT_OBJS) $(TEST_DIR)/*.c
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c $(TEST_DIR)/*.c  
+$(OUT_TEST_OBJS)%.o : $(GTEST_HEADERS) $(OUT_OBJS) $(TEST_SRC)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c $(TEST_SRC)
 
 all_unittests : $(OUT_OBJS) $(OUT_TEST_OBJS) gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
