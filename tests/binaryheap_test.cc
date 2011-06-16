@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "heap.h"
 #include "binaryheap.h"
+#include <functional>
+
 
 class BinaryHeapTest : public testing::Test {
  protected:
@@ -18,8 +20,17 @@ class BinaryHeapTest : public testing::Test {
 
 };
 
+struct Compare_int_ptr {
+  int operator()(const int* ptr1, const int* ptr2) {
+    if(*ptr1 > *ptr2) return 1;
+    else if (*ptr1 == *ptr2) return 0;
+    else return -1;
+  }
+};
+
 TEST_F(BinaryHeapTest, HeapInsertRemove) {
-  datastructures::BinaryHeap<int> heap(10);
+  datastructures::BinaryHeap<int, std::greater<int> > heap(10);
+  //  datastructures::BinaryHeap<int, Compare_int_ptr > heap1(10);
   int x1, x2, x3;
   x1 = 5;
   x2 = 2;

@@ -21,7 +21,7 @@ GTEST_DIR = gtest-1.6.0
 # Where to find user code.
 USER_DIR = src
 TEST_DIR = tests
-DATASTRUCTURES = $(USER_DIR)/datastructures/*.c $(USER_DIR)/datastructures/*.cc $(USER_DIR)/datastructures/include/*.h 
+DATASTRUCTURES = $(USER_DIR)/datastructures/*.c  $(USER_DIR)/datastructures/include/*.h 
 TEST_SRC = $(TEST_DIR)/*.c $(TEST_DIR)/*.cc
 OUT_DIR = ./
 
@@ -35,7 +35,7 @@ CXXFLAGS += -g -Wall -Wextra
 # created to the list.
 TESTS = all_unittests
 
-OBJS = stack.o heap.o sort.o binaryheap.o
+OBJS = stack.o heap.o sort.o 
 TEST_OBJS = stack_tests.o sorting_tests.o binaryheap_test.o
 OUT_OBJS=$(addprefix $(OUT_DIR)/, $(OBJS))
 OUT_TEST_OBJS=$(addprefix $(OUT_DIR)/, $(TEST_OBJS))
