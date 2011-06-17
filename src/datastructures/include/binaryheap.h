@@ -3,9 +3,9 @@
 #include <functional>
 namespace datastructures {
   template <typename T, typename Compare_fn = std::less<T> >  
-  class BinaryHeap  {
+    class BinaryHeap  {
 
- public:
+  public:
     BinaryHeap(int size) {
       _size = size;
       _current =0;
@@ -15,13 +15,16 @@ namespace datastructures {
    BinaryHeap(int size, Compare_fn &comp_fn) : BinaryHeap(size) {
       _compare_fn = comp_fn;
     };
-    T remove(){
+  T top() const {
+    assert(_current > 0);
+    return _items[0];
+  }
+  void remove(){
       assert(_current > 0);
       T item = _items[0];
       _items[0] = _items[--_current];
       heapify_down(0);
-      return item;
-    };
+  };
 
     void insert(T& item){
       assert(_current < _size);
@@ -31,18 +34,42 @@ namespace datastructures {
 
 
   private:
-    void heapify_up(int index) {
-      //  for(int i = index; i > 0; i = parent(i)) {
-      //    if(_items[i] 
-    };
-
-
-    void heapify_down(int index) {
-      
+  int inline parent(int i) {return (i-1) >>1;};
+  int inline left(int i) {return right(i)-1;};
+  int inline right(int i) {return (i+1) << 1;};
   
-    };
-    Compare_fn _compare_fn;
-    int _size, _current;
-    T* _items;
+  void inline swap(int a, int b) {
+    T temp = _items[a];
+    _items[a] = _items[b];
+    _items[b] = temp;
+  };
+  
+  void heapify_up(int index) {
+    for(int i = index; i > 0; i = parent(i)) {
+      if(_compare_fn(_items[i], _items[parent(i)]))
+	swap(i, parent(i));
+      else break;
+    }
+  };
+
+
+  void heapify_down(int index) {
+    int max = index;
+    for(int i=index; i < _current; ) {
+      if(_compare_fn(_items[left(index)], _items[max]))
+	max = left(index);
+      if(_compare_fn(_items[right(index)], _items[max]))
+	 max = right(index);
+      if(index == max) break;
+      else {
+	swap(index, max);
+	index = max;
+      }
+    }
+  };
+
+  Compare_fn _compare_fn;
+  int _size, _current;
+  T* _items;
   };
 }

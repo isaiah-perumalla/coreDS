@@ -29,14 +29,19 @@ struct Compare_int_ptr {
 };
 
 TEST_F(BinaryHeapTest, HeapInsertRemove) {
-  datastructures::BinaryHeap<int, std::greater<int> > heap(10);
+  datastructures::BinaryHeap<int> heap(10);
   //  datastructures::BinaryHeap<int, Compare_int_ptr > heap1(10);
-  int x1, x2, x3;
+  int x1, x2, x3, x7;
   x1 = 5;
   x2 = 2;
+  x7 = 7;
   x3 = 3;
   heap.insert(x1);
   heap.insert(x2);
-  heap.insert(x3);
-  ASSERT_EQ(heap.remove(), x2);
+  heap.insert(x7);
+  heap.insert(x3);  
+  ASSERT_EQ(x2, heap.top());
+  heap.remove();
+
+  ASSERT_EQ(x3, heap.top());
 }
