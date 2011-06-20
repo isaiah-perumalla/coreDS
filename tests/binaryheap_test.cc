@@ -6,14 +6,10 @@
 
 class BinaryHeapTest : public testing::Test {
  protected:
-  // Remember that SetUp() is run immediately before a test starts.
-  // This is a good place to record the start time.
   virtual void SetUp() {
 
   }
 
-  // TearDown() is invoked immediately after a test finishes.  Here we
-  // check if the test was too slow.
   virtual void TearDown() {
 
   }
@@ -27,6 +23,20 @@ struct Compare_int_ptr {
     else return -1;
   }
 };
+
+TEST_F(BinaryHeapTest, HeapNoRightChildInsertRemove) {
+    datastructures::BinaryHeap<int> heap(3);
+    int x1 = 41;
+    int x2 = 3;
+    int x3 = 10;
+    heap.insert(x1);
+    heap.insert(x2);
+    heap.insert(x3);
+    
+    heap.remove();
+    ASSERT_EQ(10, heap.top());
+    
+}
 
 TEST_F(BinaryHeapTest, HeapInsertRemove) {
   datastructures::BinaryHeap<int> heap(10);
@@ -44,4 +54,15 @@ TEST_F(BinaryHeapTest, HeapInsertRemove) {
   heap.remove();
 
   ASSERT_EQ(x3, heap.top());
+}
+
+TEST_F(BinaryHeapTest, HeapInsertRemoveOnLargeInput) {
+  int size = 1001;
+  datastructures::BinaryHeap<int> heap(size);
+  for(int i =size; i > 0; i--)  heap.insert(i);
+  
+  for(int i=1; i<=size; i++) {
+    ASSERT_EQ(i, heap.top());
+    heap.remove();
+  }
 }
