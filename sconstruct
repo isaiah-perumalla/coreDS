@@ -1,0 +1,21 @@
+gtest_dir = 'gtest-1.6.0'
+gtest_headers = Glob('gtest-1.6.0/include/gtest/*.h') + Glob('gtest-1.6.0/include/gtest/internal/*.h') 
+gtest_src = 'gtest-1.6.0/src/gtest-all.cc'
+gtest_main = 'gtest-1.6.0/src/gtest_main.cc'
+
+debug = Environment(CC="g++", CCFLAGS="-Wall -g -Wextra")
+optimized = Environment(CCFLAGS="-Wall -03")
+env = debug
+
+env.Append(CPPPATH=['src/datastructures/include/', 'gtest-1.6.0/include', 'gtest-1.6.0/'])
+gtest = env.StaticLibrary(target='gtest', source=gtest_src)
+gtest_main = env.StaticLibrary(target='gtest_main', source=[gtest_src, gtest_main])
+
+src_files = Glob("src/datastructures/*.c")+Glob("src/datastructures/*.h")  
+test_files = Glob('tests/*.c')+ Glob('tests/*.cc')
+obj_files = env.Object(src_files)
+test_objs = env.Object(test_files)
+run_all_unittests = env.Program(target = 'all_unittests', source=[obj_files, test_objs], LIBS=[gtest, gtest_main, 'pthread'], LIBPATH='.')
+
+env.Install(dir='./output', source= [gtest, gtest_main,obj_files, test_objs, run_all_unittests])
+
