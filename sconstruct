@@ -4,7 +4,7 @@ gtest_headers = Glob('gtest-1.6.0/include/gtest/*.h') + Glob('gtest-1.6.0/includ
 gtest_src = 'gtest-1.6.0/src/gtest-all.cc'
 gtest_main = 'gtest-1.6.0/src/gtest_main.cc'
 
-debug = Environment(CC="g++", CCFLAGS="-Wall -g -Wextra")
+debug = Environment(CC="g++", CCFLAGS="-Wall -g  -Wextra")
 optimized = Environment(CCFLAGS="-Wall -03")
 env = debug
 

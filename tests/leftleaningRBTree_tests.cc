@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "leftleaningRBTree.h"
 #include <functional>
-
+using namespace datastructures;
 
 class LeftLeaningRBTreeTest : public testing::Test {
  protected:
@@ -17,8 +17,9 @@ class LeftLeaningRBTreeTest : public testing::Test {
 
 
 TEST_F(LeftLeaningRBTreeTest, InsertAndRetrieve) {
-  datastructures::LLRBTree<int, char> rbTree;
-  //ASSERT_EQ(10, heap.top());
-    
+  LLRBTree<int, char> rbTree;
+  rbTree.insert(1, 'a');
+  rbTree.insert(2, 'b');
+  rbTree.insert(3, 'c');
+  ASSERT_EQ('c', rbTree.find(3));
 }
-
