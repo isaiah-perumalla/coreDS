@@ -1,3 +1,6 @@
 Various algorithms and Data sructures implemented in C and C++
+include implemetation of Left Leaning red black tree http://www.cs.princeton.edu/~rs/talks/LLRB/LLRB.pdf
 to build and run unit test
-$ make test
+$ scons -Q //requires python and scons installed
+
+run unit test ./all_unittests
