@@ -21,5 +21,8 @@ TEST_F(LeftLeaningRBTreeTest, InsertAndRetrieve) {
   rbTree.insert(1, 'a');
   rbTree.insert(2, 'b');
   rbTree.insert(3, 'c');
+  ASSERT_EQ('a', *rbTree.find(1));
+  ASSERT_EQ('b', *rbTree.find(2));
   ASSERT_EQ('c', *rbTree.find(3));
+  rbTree.assert_LLRBInvariants();
 }

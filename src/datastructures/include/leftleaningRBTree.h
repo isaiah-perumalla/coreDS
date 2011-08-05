@@ -2,8 +2,16 @@
 #include <functional>
 namespace datastructures {
 
+template<typename T>
+struct default_compare {
+  int operator()(T a, T b) const{
+    if(a > b) return 1;
+    else if (a == b) return 0;
+    else return -1;
+  }
+};
     
-  template <typename T_Key, typename T_Value, typename Compare_fn = std::less<T_Key> >  
+  template <typename T_Key, typename T_Value, typename Compare_fn = default_compare<T_Key> >  
     class LLRBTree   {
   public:
   struct Node {
@@ -17,6 +25,7 @@ namespace datastructures {
       color = RED;
       left = right = NULL;
     };
+
     inline bool is_red() {return color;};
     inline void color_as_black() { color = !RED;};
     inline void color_as_red() { color = RED;};
@@ -28,9 +37,9 @@ namespace datastructures {
 	}
     };
     inline bool has_red_leaning_right() { 
-      return this->right != NULL && this->right->is_red();
+      return  !isRed(this->left) && isRed(this->right);
     };
-
+    
   };
 
   typedef Node* Link;
@@ -42,7 +51,7 @@ namespace datastructures {
     root->color_as_black();
   };
 
-  T_Value* find(T_Key key) const {
+  T_Value* find(T_Key key)  const{
     Link head = root;
     while(head != NULL) {
       int cmp = compare_fn(key, head->key); 
@@ -53,6 +62,25 @@ namespace datastructures {
     return NULL;
   };
 
+  void assert_LLRBInvariants() { 
+
+    assertBlackHeight(root);
+  }
+
+  int static assertBlackHeight(Link h) {
+    if(h == NULL) return 0;
+
+    assert(!h->has_red_leaning_right());
+    assert(!(isRed(h->left) && isRed(h->left->left)));
+
+    int leftCount = assertBlackHeight(h->left);
+    int rightCount = assertBlackHeight(h->right);
+    if(!isRed(h->left)) leftCount++;
+    if(!isRed(h->right)) rightCount++;
+    assert(leftCount == rightCount);
+       
+    return leftCount;
+  }
   private:
   static const bool RED = true;
   Link root;
@@ -80,12 +108,25 @@ namespace datastructures {
   };
   
   inline void rotate_left(Link& h) {
-        
+    Link newHead = h->right;
+    h->right = newHead->left;
+    newHead->left = h;
+    newHead->color = h->color;
+    h->color_as_red();
+    h = newHead;
+    
   };
 
   inline void rotate_right(Link& h) {
-    
+    Link newHead = h->left;
+    h->left = newHead->right;
+    newHead->right = h;
+    newHead->color = h->color;
+    h->color_as_red();
+    h = newHead;
   };
     
   };
+
+
 }
