@@ -42,9 +42,15 @@ namespace datastructures {
     root->color_as_black();
   };
 
-  T_Value find(T_Key key) const {
-    T_Value i;
-    return i;
+  T_Value* find(T_Key key) const {
+    Link head = root;
+    while(head != NULL) {
+      int cmp = compare_fn(key, head->key); 
+      if(cmp == 0) return &head->value;
+      else if(cmp < 0) head = head->left;
+      else head = head->right;
+    }
+    return NULL;
   };
 
   private:
@@ -66,7 +72,8 @@ namespace datastructures {
     else rb_insert(head->right, key, value);
     
     rebalance(head);
-  }
+  };
+  
   inline void rebalance(Link& h) { 
     if(h->has_red_leaning_right()) rotate_left(h);
     if(isRed(h->left) && isRed(h->left->left)) rotate_right(h);
@@ -74,10 +81,11 @@ namespace datastructures {
   
   inline void rotate_left(Link& h) {
         
-  }
+  };
+
   inline void rotate_right(Link& h) {
     
-  }
+  };
     
   };
 }
