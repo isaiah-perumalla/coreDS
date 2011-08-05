@@ -45,7 +45,10 @@ struct default_compare {
   typedef Node* Link;
   
   LLRBTree() { root = NULL;};
-  
+  ~LLRBTree() {
+    //ToDo: post order traverse and delete nodes
+  };
+
   void insert(T_Key key, T_Value value){
     rb_insert(root, key, value);
     root->color_as_black();
@@ -62,9 +65,10 @@ struct default_compare {
     return NULL;
   };
 
-  void assert_LLRBInvariants() { 
+  
+  int assert_LLRBInvariants() { 
 
-    assertBlackHeight(root);
+    return assertBlackHeight(root);
   }
 
   int static assertBlackHeight(Link h) {
